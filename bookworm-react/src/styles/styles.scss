@@ -1,0 +1,251 @@
+@use './fonts.css';
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+// Header vars
+$headerUserBackgroundColor:#93b4bc;
+// Sidebar vars
+$sidebarDividerColor: #e8f0f8;
+$sidebarTextColor: #b8c5d3;
+$sidebarBackgroundColor: #454664;
+
+body {
+    font-family: "Roboto", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    height: 100%;
+    margin: 0;
+}
+
+.App {
+    width: 100%;
+    height: 100%;
+}
+
+// Header Start
+header {
+    height: 100px;
+    min-width: 251px;
+
+    .user,
+    .radical {
+        height: 100px;
+    }
+
+    .user {
+        background-color: $headerUserBackgroundColor;
+        position: relative;
+    }
+
+    .avatar {
+        width:60%;
+        height: 60%;
+        border-radius: 50%;
+        margin: 20% auto 0 auto;
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+    }
+
+    .radical {
+        font-weight: 700;
+        font-size: 2em;
+        line-height: 100px;
+        text-align: left;
+
+        span {
+            color: #8b201d;
+        }
+    }
+}
+
+// Header End
+main {
+    display: flex;
+
+    // AppContent Start
+    .AppContent {
+        background-color: #e9edf6;
+        flex: 1 1 auto;
+    }
+
+    // AppContent End
+}
+
+.Sidebar {
+    background-color: $sidebarBackgroundColor;
+    color: $sidebarTextColor;
+}
+
+// Responsive Start
+/* Default styles for lg devices */
+@media (min-width: 1024px) {
+
+    // Sidebar Start
+    .Sidebar {
+        height: calc(100vh - 100px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: visible;
+
+        ul {
+            width: 100%;
+            overflow: visible;
+        }
+
+        li {
+            list-style-type: none;
+            height: 100px;
+            width: 7rem;
+
+            .text {
+                display: none;
+            }
+
+            svg {
+                transform: scale(1.7);
+                height: 100px;
+                margin: 0 auto;
+            }
+
+            .divider {
+                height: 1px;
+                width: 2rem;
+                margin: 0 auto;
+                border-bottom: 1px solid $sidebarDividerColor;
+            }
+
+            &.active {
+                width: 8rem;
+                position: sticky;
+                border-top-right-radius: 15px;
+                border-bottom-right-radius: 15px;
+
+                background: rgb(102, 155, 246);
+                background: -moz-linear-gradient(180deg, rgba(102, 155, 246, 1) 0%, rgba(64, 114, 239, 1) 100%);
+                background: -webkit-linear-gradient(180deg, rgba(102, 155, 246, 1) 0%, rgba(64, 114, 239, 1) 100%);
+                background: linear-gradient(180deg, rgba(102, 155, 246, 1) 0%, rgba(64, 114, 239, 1) 100%);
+                filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#669bf6", endColorstr="#4072ef", GradientType=1);
+
+                .divider {
+                    opacity: 0;
+                }
+
+                svg {
+                    color: #fff;
+                }
+            }
+        }
+    }
+
+    // Sidebar End
+}
+
+
+
+/** Styles for devices below lg **/
+@media (min-width: 640px) and (max-width: 1024px) {
+    main {
+        flex-direction: column;
+    }
+
+
+    // Sidebar Start
+    .Sidebar {
+        width: 100%;
+        height: 60px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        svg {
+            margin: 0 auto;
+        }
+
+        ul {
+            margin: 0 auto;
+            display: flex;
+        }
+
+        li {
+            display: flex;
+            width: 10rem;
+            justify-content: center;
+            text-align: center;
+
+            a {
+                width: 80%;
+            }
+
+            .divider {
+                width: 1px;
+                height: 60%;
+                position: relative;
+                top: 20%;
+                background-color: $sidebarDividerColor;
+            }
+
+            &:last-child {
+                .divider {
+                    display: none;
+                }
+            }
+        }
+    }
+
+    // Sidebar End
+}
+
+/* Styles for devices below sm */
+@media (max-width: 640px) {
+    header .user {
+        min-width:100px;
+    }
+
+    .Sidebar {
+        width: 100%;
+        display:block;
+        height: auto;
+        justify-content: center;
+        align-items: center;
+
+        ul {
+            display: block;
+            margin:10px 0;
+        }
+        li {
+            width: 60%;
+            margin-left:20%;
+            transition: all 0.5s ease;
+
+            &:last-child {
+                .divider {
+                    display: none;
+                }
+            }
+
+            &:hover {
+                transition: all 0.5s ease;
+                color: #fff;
+            }
+        }
+        svg {
+            margin:0 auto;
+        }
+        a {
+            text-align: center;
+        }
+        .divider {
+            display:block;
+            height:1px;
+            width:25%;
+            margin:15px auto;
+            top:unset;
+            background-color: $sidebarDividerColor;
+        }
+
+    }
+}
+// Responsive End

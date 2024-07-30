@@ -1,0 +1,41 @@
+services:
+  frontend:
+    build: ./bookworm-react
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    environment:
+      - REACT_APP_API_URL=http://localhost:8000
+    volumes:
+      - ./bookworm-react:/app
+      - /app/node_modules
+
+  backend:
+    build: ./bookworm-api
+    ports:
+      - "8000:8000"
+    depends_on:
+      - mongodb
+    environment:
+      - DB_CONNECTION=mongodb
+      - DB_HOST=mongodb
+      - DB_PORT=27017
+      - DB_DATABASE=bookworm
+      - DB_USERNAME=root
+      - DB_PASSWORD=example
+    volumes:
+      - ./bookworm-api:/var/www/html
+
+  mongodb:
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=example
+    volumes:
+      - mongo-data:/data/db
+
+volumes:
+  mongo-data:
