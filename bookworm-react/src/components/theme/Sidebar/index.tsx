@@ -1,16 +1,19 @@
-import React from "react"
+import { useLocation } from "react-router-dom"
 import ChartBar from "../../icons/ChartBar"
-import Heart from "../../icons/Heart"
 import Cog from "../../icons/Cog"
+import Heart from "../../icons/Heart"
 import LinkItem from "./LinkItem"
 
 const Sidebar = () => {
+    const location = useLocation()
+    const locationPathname = location.pathname
+
     return (
         <div className="Sidebar w-28 flex">
             <ul>
-                <LinkItem href="/" title="Home" icon={<ChartBar />} active={true} />
-                <LinkItem href="/favourites" title="Favourites" icon={<Heart />} active={false} />
-                <LinkItem href="/settings" title="Settings" icon={<Cog />} active={false} />
+                <LinkItem href="/" title="Home" icon={<ChartBar />} active={locationPathname === '/'} />
+                <LinkItem href="/favourites" title="Favourites" icon={<Heart />} active={locationPathname === '/favourites'} />
+                <LinkItem href="/settings" title="Settings" icon={<Cog />} active={locationPathname === '/settings'} />
             </ul>
         </div>
     )

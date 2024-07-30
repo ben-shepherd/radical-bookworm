@@ -1,4 +1,4 @@
-import React from 'react';
+import { useNavigate } from "react-router-dom";
 
 type Props = {
     href: string;
@@ -8,12 +8,18 @@ type Props = {
 }
 
 const LinkItem = ({ href, title, icon, active }: Props) => {
+    const navigate = useNavigate();
+
+    const handleClick = () => {
+        navigate(href)
+    }
+
     return (
-        <li className={active ? 'active' : ''}>
-            <a href={href} title={title}>
+        <li className={`LinkItem ${active ? 'active' : ''}`}>
+            <button onClick={handleClick}>
                 {icon} <p className='text'>{title}</p>
-            </a>
-            <div className='divider'></div>
+                <div className='divider'></div>
+            </button>
         </li>
     )
 }

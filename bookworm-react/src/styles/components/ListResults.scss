@@ -63,14 +63,14 @@
 
 /* Styles for devices below sm */
 @media (max-width: 640px) {
-    .listResults {
+    .ListResults {
 
-        .SearchItem {
+        .ListItem {
             padding:10px 0;
             height:auto;
             flex-direction: column;
         }
-        .SearchItem .summary, .StarRating {
+        .ListItem .summary, .StarRating {
             margin:5px 0;
         }
         .summary {
