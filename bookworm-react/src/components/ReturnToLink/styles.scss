@@ -1,0 +1,21 @@
+@use '../../styles/variables.scss' as v;
+
+.ReturnToLink {
+    display: flex;
+    font-size:1.3em;
+    align-items: center;
+
+    .icon {
+        margin-right:1em;
+    }
+    .text {
+        margin-right:0.5em;
+    }
+    svg {
+        color: v.$primaryTextColor;
+        transform: scale(1.2);
+    }
+    a {
+        color: v.$primaryLinkColor;
+    }
+}

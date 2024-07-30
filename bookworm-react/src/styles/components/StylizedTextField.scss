@@ -1,0 +1,35 @@
+.StylizedTextField {
+    height: 60px;
+    background-color: #fff;
+    display: flex;
+
+    .Label {
+        background-color: #93b4bc;
+        padding: 0 2em;
+        line-height: 60px;
+        color: #fff;
+        font-size: 1.2em;
+    }
+
+    .Component {
+        padding-left: 2em;
+        display: flex;
+        align-items: center;
+    }
+}
+
+@media (max-width: 640px) {
+    .StylizedTextField {
+        height:auto;
+        flex-direction: column;
+        background-color: #fff;
+
+        .Component {
+            display:block;
+            padding:1em;
+            width:100%;
+            background-color: #fff;
+
+        }
+    }
+}

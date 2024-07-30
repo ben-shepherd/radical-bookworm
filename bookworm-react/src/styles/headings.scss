@@ -1,0 +1,25 @@
+@use './variables.scss' as v;
+
+h1,h2,h3,h4,h5,h6 {
+    color:v.$headingTextColor;
+
+
+}
+
+.heading-1, .heading-2, .heading-3{
+    font-weight: 500;
+
+    &:hover {
+        text-decoration: underline;
+        cursor: pointer;
+    }
+}
+.heading-1 {
+    font-size:1.7em;
+}
+.heading-2 {
+    font-size:1.4em;
+}
+.heading-3 {
+    font-size:1.1em;
+}

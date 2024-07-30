@@ -1,0 +1,82 @@
+@use '../variables.scss' as v;
+
+.ListResults {
+
+    .ListItem {
+        height:55px;
+        background-color: v.$listResultsBackgroundColor;
+        display:flex;
+        justify-content: center;
+        align-items: center;
+
+        .summary {
+            display:flex;
+            flex: 1 1 auto;
+
+            .title {
+                color: v.$listResultsTextPrimaryColor;
+                font-weight:700;
+                margin:0 5px;
+                
+                button {
+                    text-transform: uppercase;
+                }
+            }
+            .author {
+                color: v.$listResultsTextSecondaryColor;
+            }
+        }
+        
+        .bookIcon {
+            svg {
+                margin:0 auto;
+                color: v.$listResultsIconColor;
+            }
+        }
+
+        .price {
+            font-weight:700;
+            text-transform: uppercase;
+            margin:0 1em;
+        }
+
+        .favouriteIcon {
+            margin-right:1em;
+            display: flex;
+            justify-content: center;
+
+            svg {
+                transition: all 0.5s ease;
+                
+            }
+
+            &:hover svg {
+                transition: all 0.5s ease;
+                transform: scale(1.1);
+                cursor:pointer;
+            }
+        }
+        
+    }
+}
+
+
+/* Styles for devices below sm */
+@media (max-width: 640px) {
+    .listResults {
+
+        .SearchItem {
+            padding:10px 0;
+            height:auto;
+            flex-direction: column;
+        }
+        .SearchItem .summary, .StarRating {
+            margin:5px 0;
+        }
+        .summary {
+            display:flex;
+            flex-direction: column;
+            text-align: center;
+        }
+    }
+}

@@ -1,13 +1,13 @@
 import './styles/styles.scss';
 import React from 'react';
-import { BrowserRouter as Router } from "react-router-dom";
+import { BrowserRouter, BrowserRouter as Router } from "react-router-dom";
 import Sidebar from './components/theme/Sidebar';
 import Routes from './routes';
 import Header from './components/theme/Header';
 
 function App() {
   return (
-    <Router>
+    <BrowserRouter>
       <div className="App">
         <Header />
 
@@ -20,7 +20,7 @@ function App() {
 
         </main>
       </div>
-    </Router>
+      </BrowserRouter>
   );
 }
 

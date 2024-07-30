@@ -1,0 +1,20 @@
+@use '../../styles/variables.scss' as v;
+
+.StarRating {
+    display:flex;
+    margin-right:1em;
+
+    .star:hover {
+        cursor: pointer;
+        
+        svg {
+        color: v.$starRatingHoverColor !important;
+        }
+    }
+    .star:not(.active) {
+        color:#ccc;
+    }
+    .star.active svg {
+        color: v.$starRatingActiveColor;   
+    }
+}

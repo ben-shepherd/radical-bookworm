@@ -1,0 +1,17 @@
+.Gallery {
+
+    .GalleryItem {
+        margin-bottom:1rem;
+        min-height: 250px;
+    }
+    .image, button {
+        width:100%;
+        height: 100%;
+    }
+
+    .image {
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: cover;
+    }
+}

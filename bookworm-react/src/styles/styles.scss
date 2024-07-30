@@ -1,14 +1,14 @@
+@use './variables.scss' as v; 
 @use './fonts.css';
+@use './headings.scss';
+@use './components/SearchBar.scss';
+@use './components/Gallery.scss';
+@use './components/ListResults.scss';
+@use './components/StylizedTextField.scss';
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-// Header vars
-$headerUserBackgroundColor:#93b4bc;
-// Sidebar vars
-$sidebarDividerColor: #e8f0f8;
-$sidebarTextColor: #b8c5d3;
-$sidebarBackgroundColor: #454664;
 
 body {
     font-family: "Roboto", sans-serif;
@@ -16,12 +16,15 @@ body {
     font-style: normal;
     height: 100%;
     margin: 0;
+    background-color: v.$appContentBg;;
 }
 
 .App {
     width: 100%;
     height: 100%;
 }
+
+
 
 // Header Start
 header {
@@ -34,7 +37,7 @@ header {
     }
 
     .user {
-        background-color: $headerUserBackgroundColor;
+        background-color: v.$headerUserBackgroundColor;
         position: relative;
     }
 
@@ -50,45 +53,44 @@ header {
 
     .radical {
         font-weight: 700;
-        font-size: 2em;
         line-height: 100px;
         text-align: left;
 
+        h1 {
+            font-size: 2em;
+        }
         span {
             color: #8b201d;
         }
     }
 }
 
-// Header End
+.Sidebar {
+    background-color: v.$sidebarBackgroundColor;
+    color: v.$sidebarTextColor;
+}
+
 main {
     display: flex;
 
-    // AppContent Start
     .AppContent {
-        background-color: #e9edf6;
+        background-color:  v.$appContentBg;
         flex: 1 1 auto;
     }
-
-    // AppContent End
 }
 
-.Sidebar {
-    background-color: $sidebarBackgroundColor;
-    color: $sidebarTextColor;
-}
-
-// Responsive Start
 /* Default styles for lg devices */
 @media (min-width: 1024px) {
 
     // Sidebar Start
     .Sidebar {
-        height: calc(100vh - 100px);
+        height: 100vh;
         display: flex;
         align-items: center;
         justify-content: center;
         overflow: visible;
+        position: sticky;
+        top: 0;
 
         ul {
             width: 100%;
@@ -114,7 +116,7 @@ main {
                 height: 1px;
                 width: 2rem;
                 margin: 0 auto;
-                border-bottom: 1px solid $sidebarDividerColor;
+                border-bottom: 1px solid v.$sidebarDividerColor;
             }
 
             &.active {
@@ -139,8 +141,6 @@ main {
             }
         }
     }
-
-    // Sidebar End
 }
 
 
@@ -150,9 +150,7 @@ main {
     main {
         flex-direction: column;
     }
-
-
-    // Sidebar Start
+    
     .Sidebar {
         width: 100%;
         height: 60px;
@@ -184,7 +182,7 @@ main {
                 height: 60%;
                 position: relative;
                 top: 20%;
-                background-color: $sidebarDividerColor;
+                background-color: v.$sidebarDividerColor;
             }
 
             &:last-child {
@@ -194,12 +192,14 @@ main {
             }
         }
     }
-
-    // Sidebar End
 }
 
 /* Styles for devices below sm */
 @media (max-width: 640px) {
+    main {
+        flex-direction: column;
+    }
+
     header .user {
         min-width:100px;
     }
@@ -243,9 +243,8 @@ main {
             width:25%;
             margin:15px auto;
             top:unset;
-            background-color: $sidebarDividerColor;
+            background-color: v.$sidebarDividerColor;
         }
 
     }
 }
-// Responsive End
