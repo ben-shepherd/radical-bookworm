@@ -17,7 +17,7 @@ abstract class Repository
         return forward_static_call([$this->modelClass, 'query']);
     }
 
-    public function find(int $id): ?Model
+    public function find(string $id): ?Model
     {
         return $this->createQueryBuilder()->findOrFail($id);
     }

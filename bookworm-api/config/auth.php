@@ -2,6 +2,8 @@
 
 return [
 
+    'basicApiToken' => env('AUTH_BASIC_API_TOKEN'),
+
     /*
     |--------------------------------------------------------------------------
     | Authentication Defaults

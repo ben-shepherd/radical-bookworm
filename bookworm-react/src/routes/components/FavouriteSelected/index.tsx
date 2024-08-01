@@ -36,7 +36,7 @@ const Favourites = () => {
             <div className="my-10"></div>
 
             <StylizedTextField
-                label='Rating'
+                label='Cost'
                 value='12 GBP'
                 onChange={(value) => null}
             />

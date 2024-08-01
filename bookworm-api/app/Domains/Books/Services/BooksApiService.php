@@ -30,7 +30,7 @@ class BooksApiService
             $apiClass = app()->make($apiClassString);
 
             if ($apiClass instanceof UpdateBooksContract === false) {
-                throw new UpdateBooksException('API class does not implement FetchBooksApiContract');
+                throw new UpdateBooksException('API class \'' . $apiClassString . '\' does not implement UpdateBooksContract');
             }
 
             $apiClass->updateBooks(new UpdateBooksOptionsDTO());

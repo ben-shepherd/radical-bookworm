@@ -3,8 +3,7 @@
 namespace App\Console\Commands;
 
 
-use App\Domains\Books\DTOs\UpdateBooksOptionsDTO;
-use App\Domains\Books\Services\APIs\NyTimesService;
+use App\Models\User;
 use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Console\Command;
 
@@ -30,10 +29,11 @@ class Debug extends Command
      */
     public function handle()
     {
-        /** @var NyTimesService $api */
-        $api = app()->make(NyTimesService::class);
+        $user = User::query()->first();
 
-        $books = $api->updateBooks(new UpdateBooksOptionsDTO());
+        $favouriteBooks = $user->favouriteBooks()->with('book')->get();
+
+        dd($favouriteBooks[0]->book);
 
 
     }

@@ -68,6 +68,7 @@ readonly class NyTimesService implements UpdateBooksContract
                 $book->save();
 
                 $results->push($book);
+                continue;
 
             } catch (ModelNotFoundException $e) {
                 // do nothing
@@ -117,6 +118,8 @@ readonly class NyTimesService implements UpdateBooksContract
                 );
             }, $response['body']['results'] ?? []);
         } catch (RequestException $e) {
+            Log::warning('requestNames exception. Code: ' . $e->getResponse()->getStatusCode());
+
             if ($e->getResponse()->getStatusCode() === 429) {
                 return (new FakeNamesResponse())->toArray();
             }
@@ -171,6 +174,9 @@ readonly class NyTimesService implements UpdateBooksContract
                 true
             );
         } catch (RequestException $e) {
+            Log::warning('requestList exception. Code: ' . $e->getResponse()->getStatusCode());
+
+
             if ($e->getResponse()->getStatusCode() === 429) {
                 return (new FakeListResponse())->toArray();
             }

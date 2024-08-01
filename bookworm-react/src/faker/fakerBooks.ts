@@ -3,7 +3,7 @@ import { Book } from "../types/books.t";
 const fakerBooks = (amount: number = 12, offset: number = 0): Book[] => {
     let books = [];
 
-    const generateRandomString = () => Math.random().toString(36).substring(2, 15).toString();
+    const generateRandomString = () => Math.random().toString(36).substring(2, 15);
 
     books.push({
         id: generateRandomString(),
