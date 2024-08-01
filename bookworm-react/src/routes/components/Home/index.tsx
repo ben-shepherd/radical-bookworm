@@ -1,5 +1,5 @@
 import SearchResults from 'components/SearchResults';
-import fakerBooks from 'faker/fakerBooks';
+import useFavouriteBooks from 'hooks/Books/useFavouriteBooks';
 import { useCallback, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Book } from 'types/books.t';
@@ -12,36 +12,36 @@ const Home = () => {
     const navigate = useNavigate();
     
     const [search, setSearch] = useState<string>('');
-    /**
-     * TODO: replace when API calls are working
-     */
-    const { /*books: booksBestSellers,*/ refresh: refreshBooksBestSellers } = useFetchBooks({})
-    // const { books: booksFavourites } = useFetchBooks({ search })
-    // const booksBestSellers = fakerBooks(12, 0)
-    const booksBestSellers = fakerBooks(16, 0)
-    // const booksBestSellers: Book[] = [];
-    const booksFavourites = fakerBooks(16, 16)
+    const { books: booksSearchResults, loading: loadingSearchResults, refresh: refreshSearch } = useFetchBooks()
+    
+    const { books: booksBestSellers, loading: loadingBooksBestSellers } = useFetchBooks({ autoload: true })
+    const { books: booksFavourites, loading: loadingBooksFavourites } = useFavouriteBooks()
 
     const handleClick = (book: Book) => {
-        navigate(`/favourite/${book.id}`);
+        navigate(`/edit/${book._id}`);
     }
+
+    const handleSearch = useCallback(() => {
+        refreshSearch({ search, resultsEmptyWhenSearchEmpty: true });
+    }, [search, refreshSearch])
 
     const searchBarComponent = useCallback(() => {
         return (
             <SearchBar
                 search={search}
                 onSearchChange={(value) => setSearch(value)}
-                onSubmitSearch={refreshBooksBestSellers}
+                onSubmitSearch={handleSearch}
                 placeholder='What books would you like to find?'
+                loading={loadingSearchResults}
             />
         )
-    }, [search, refreshBooksBestSellers])();
+    }, [search, loadingSearchResults, handleSearch])();
 
     return (
         <Content id='home'>
 
             <SearchResults
-                results={booksBestSellers}
+                results={booksSearchResults}
                 onClick={handleClick}
                 PreSearchComponent={
                     <div className='pre-search'>
@@ -50,10 +50,17 @@ const Home = () => {
                         <div className='my-10'></div>
 
                         <h1 className='heading-1 mb-10'>New York Best Sellers</h1>
-                        <Gallery data={booksBestSellers} />
+                        <Gallery data={booksBestSellers} loading={loadingBooksBestSellers} onClick={handleClick} />
 
-                        <h1 className='heading-1'>Favourites</h1>
-                        <Gallery data={booksFavourites} />
+                        <div className='my-10'></div>
+
+                        <h1 className='heading-1 mb-10'>Favourites</h1>
+                        {loadingBooksFavourites || booksFavourites.length ? (
+                            <Gallery data={booksFavourites} loading={loadingBooksFavourites} onClick={handleClick} />
+                        ) : (
+                            <p className='no-results mt-5'>You have not added any books to your favourites.</p>
+                        )}
+                        
                     </div>
                 }
                 PostSearchComponent={(searchResultsComponent) => (

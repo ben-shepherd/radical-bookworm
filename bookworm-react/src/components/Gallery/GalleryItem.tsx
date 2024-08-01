@@ -1,15 +1,17 @@
-import React from 'react';
 import { Book } from '../../types/books.t';
 
 type Props = {
     item: Book;
     className?: string;
+    onClick?: (book: Book) => any;
 }
 
-const GalleryItem = ({ item, className = '' }: Props) => {
+const GalleryItem = ({ item, className = '', onClick }: Props) => {
 
     const handleClick = () => {
-        window.open(item.link, '_blank');
+        if(typeof onClick === 'function') {
+            onClick(item);
+        }
     }
 
     return (

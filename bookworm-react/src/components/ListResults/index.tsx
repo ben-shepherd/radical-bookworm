@@ -9,10 +9,10 @@ type Props = {
 const ListResults = ({ results, onClick }: Props) => {
     return (
         <div className="ListResults">
-        {results.map((book: Book) => (
-            <ListItem className='mb-5' key={book.id} book={book} onClick={onClick} />
-        ))}
-    </div>
+            {results.map((book: Book) => (
+                <ListItem className='mb-5' key={book._id} book={book} onClick={onClick} />
+            ))}
+        </div>
     )
 }
 

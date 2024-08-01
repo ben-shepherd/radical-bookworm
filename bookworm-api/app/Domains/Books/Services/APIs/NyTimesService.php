@@ -63,7 +63,8 @@ readonly class NyTimesService implements UpdateBooksContract
                 $book->title = $bookDto->title;
                 $book->authors = $bookDto->authors;
                 $book->description = $bookDto->description;
-                $book->image = $bookDto->image;
+                // Don't overwrite the image (we want to keep picsum URL)
+                //$book->image = $bookDto->image;
                 $book->link = $bookDto->link;
                 $book->save();
 

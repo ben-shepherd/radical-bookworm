@@ -13,7 +13,7 @@ const Sidebar = () => {
             <ul>
                 <LinkItem href="/" title="Home" icon={<ChartBar />} active={locationPathname === '/'} />
                 <LinkItem href="/favourites" title="Favourites" icon={<Heart />} active={locationPathname === '/favourites'} />
-                <LinkItem href="/settings" title="Settings" icon={<Cog />} active={locationPathname === '/settings'} />
+                <LinkItem href="/edit/0" title="Edit" icon={<Cog />} active={locationPathname.startsWith('/edit')} />
             </ul>
         </div>
     )

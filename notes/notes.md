@@ -32,4 +32,4 @@ Endpoints i think we'll need
 # Updating of books
 - The updating of books functionality sits inside a Command. 
 -- Typically, this allows to run it as a cron daily. 
--- An alternative method, store a TTL somewhere, when a user requests a search endpoint, we could trigger a queue worker to perform the update, while not affecting the response time of the initial request. This means the user can request the a search, but also is responsible for triggering an update due to the system recognising it out of date
+-- An alternative method, store a TTL somewhere, when a user requests a search endpoint, we could trigger a queue worker to perform the update, while not affecting the response time of the initial request. This means the user can request the a search, but also is responsible for triggering an update due to the system recognising it out of date 

@@ -1,23 +1,29 @@
 import MagnifyingGlass from 'components/icons/MagnifyingGlass';
-import React, { useEffect, useRef } from 'react';
+import React from 'react';
 import 'styles/components/SearchBar.scss';
 
 type Props = {
     search: string;
     placeholder: string;
+    loading?: boolean;
+    loadingText?: string;
     onSearchChange: (value: string) => void;
     onSubmitSearch: (...args: any[]) => any;
 }
 
-const SearchBar = ({ search, placeholder, onSearchChange, onSubmitSearch }: Props) => {
+const SearchBar = ({ search, placeholder, loading = false, loadingText = 'Loading...', onSearchChange, onSubmitSearch }: Props) => {
     const handleKeyUp = (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === 'Enter') {
-            onSubmitSearch();
+            handleSubmitSearch();
         }
     }
 
-    const handleSearch = (value: string) => {
-        onSearchChange(value)
+    const handleSubmitSearch = () => {
+        if(loading) {
+            return;
+        }
+
+        onSubmitSearch();
     }
 
     return (
@@ -30,11 +36,11 @@ const SearchBar = ({ search, placeholder, onSearchChange, onSubmitSearch }: Prop
                     type='text'
                     placeholder={placeholder}
                     value={search}
-                    onChange={(e) => handleSearch(e.target.value)}
+                    onChange={(e) => onSearchChange(e.target.value)}
                     onKeyUp={handleKeyUp} />
             </div>
             <div className="button">
-                <button onClick={onSubmitSearch}>Go</button>
+                <button onClick={handleSubmitSearch}>{loading ? loadingText : 'Go'}</button>
             </div>
         </div>
     )

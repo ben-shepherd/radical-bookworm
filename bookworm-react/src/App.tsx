@@ -1,13 +1,16 @@
-import './styles/styles.scss';
-import React from 'react';
-import { BrowserRouter, BrowserRouter as Router } from "react-router-dom";
+import { SnackbarProvider } from "notistack";
+import { BrowserRouter } from "react-router-dom";
+import Header from './components/theme/Header';
 import Sidebar from './components/theme/Sidebar';
 import Routes from './routes';
-import Header from './components/theme/Header';
+import './styles/styles.scss';
 
 function App() {
+
   return (
     <BrowserRouter>
+      <SnackbarProvider />
+      
       <div className="App">
         <Header />
 

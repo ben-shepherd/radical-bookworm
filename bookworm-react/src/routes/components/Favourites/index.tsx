@@ -1,31 +1,31 @@
-import ListResults from 'components/ListResults';
+import Gallery from 'components/Gallery';
 import SearchResults from 'components/SearchResults';
-import fakerBooks from 'faker/fakerBooks';
+import useFavouriteBooks from 'hooks/Books/useFavouriteBooks';
 import { useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { Book } from 'types/books.t';
 import SearchBar from '../../../components/SearchBar';
 import Content from '../../../components/theme/Content';
 
 const Favourites = () => {
     const navigate = useNavigate();
-    const { id } = useParams();
     const [search, setSearch] = useState<string>('');
-    /**
-     * TODO: replace when API calls are working
-     */
-    const booksCurrentFavourites = fakerBooks(12, 0);
-    const booksSearchResults = fakerBooks(12, 12);
+
+    const { books: booksFavourites, loading, refresh } = useFavouriteBooks();
+
+    const filteredBooks = search.length 
+        ? booksFavourites.filter((book) => book.title.includes(search) || book.description.includes(search) || book.authors.includes(search))
+        : booksFavourites;
 
     const handleClick = (book: Book) => {
-        navigate(`/favourite/${book.id}`);
+        navigate(`/edit/${book._id}`);
     };
 
     return (
         <Content id='favourites'>
 
             <SearchResults
-                results={booksSearchResults}
+                results={filteredBooks}
                 onClick={handleClick}
                 PreSearchComponent={
                     <div className='pre-search'>
@@ -43,7 +43,13 @@ const Favourites = () => {
 
                         <div className='my-10'></div>
 
-                        <ListResults results={booksCurrentFavourites} />
+                        {loading && (
+                            <Gallery loading={loading} maxItems={6} onClick={handleClick} data={[]} />
+                        )}
+                        {!loading && booksFavourites.length === 0 && (
+                            <p className='no-results mt-5'>You have not added any books to your favourites.</p>
+                        )}
+
                     </div>
                 }
                 PostSearchComponent={(searchResultsComponent) => (

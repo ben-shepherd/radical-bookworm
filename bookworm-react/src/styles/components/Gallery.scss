@@ -1,10 +1,9 @@
 .Gallery {
 
     .GalleryItem {
-        margin-bottom:1rem;
         min-height: 250px;
     }
-    .image, button {
+    .image, button, .loadingGradient {
         width:100%;
         height: 100%;
     }
@@ -14,4 +13,39 @@
         background-repeat: no-repeat;
         background-size: cover;
     }
+}
+
+.loadingGradient {
+    display:flex;
+    justify-content: center;
+    align-items: center;
+    svg {
+        opacity:0.2;
+        scale: transform(1.5);
+    }
+}
+
+.loadingGradient {
+    background: linear-gradient(180deg, #dfdfdf, #cacaca);
+    background-size: 400% 400%;
+
+    -webkit-animation: LoadingAnimation 3s ease infinite;
+    -moz-animation: LoadingAnimation 3s ease infinite;
+    animation: LoadingAnimation 3s ease infinite;
+}
+
+@-webkit-keyframes LoadingAnimation {
+    0%{background-position:2% 0%}
+    50%{background-position:99% 100%}
+    100%{background-position:2% 0%}
+}
+@-moz-keyframes LoadingAnimation {
+    0%{background-position:2% 0%}
+    50%{background-position:99% 100%}
+    100%{background-position:2% 0%}
+}
+@keyframes LoadingAnimation {
+    0%{background-position:2% 0%}
+    50%{background-position:99% 100%}
+    100%{background-position:2% 0%}
 }

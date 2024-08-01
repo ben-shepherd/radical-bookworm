@@ -8,6 +8,7 @@ use App\Domains\Books\Middleware\BooksMiddleware;
 use App\Domains\Books\Services\APIs\NyTimesService;
 use GuzzleHttp\Client;
 use GuzzleHttp\ClientInterface;
+use Illuminate\Http\Middleware\HandleCors;
 use Illuminate\Routing\Router;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
@@ -42,13 +43,14 @@ class BookServiceProvider extends ServiceProvider
         /** @var Router $router */
         $router = app()->make(Router::class);
         $router->aliasMiddleware('books-middleware', BooksMiddleware::class);
+        $router->aliasMiddleware('cors', HandleCors::class);
     }
 
     private function mapBooksRoutes(): void
     {
         Route::prefix('books/v1')
             ->namespace('')
-            ->middleware('books-middleware')
+            ->middleware(['books-middleware', 'cors'])
             ->group(base_path('app/Domains/Books/Routes/Routes.php'));
     }
 }
