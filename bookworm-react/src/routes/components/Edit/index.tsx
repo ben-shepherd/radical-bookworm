@@ -6,9 +6,9 @@ import { useParams } from 'react-router-dom';
 import Content from '../../../components/theme/Content';
 import './styles.scss';
 
-const Favourites = () => {
+const Edit = () => {
 
-    const { id } = useParams();
+    const { _id = null } = useParams();
     const book = fakerBooks(1)[0];
 
     return (
@@ -58,4 +58,4 @@ const Favourites = () => {
     )
 }
 
-export default Favourites
+export default Edit
