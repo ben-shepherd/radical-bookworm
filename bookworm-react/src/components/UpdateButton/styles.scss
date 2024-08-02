@@ -1,0 +1,16 @@
+.UpdateButton {
+  padding:15px 75px;
+  border-radius:30px;
+  color:#fff;
+  text-transform:uppercase;
+  font-weight:500;
+  background: rgb(102, 155, 246);
+  background: -moz-linear-gradient(180deg, rgba(102, 155, 246, 1) 0%, rgba(64, 114, 239, 1) 100%);
+  background: -webkit-linear-gradient(180deg, rgba(102, 155, 246, 1) 0%, rgba(64, 114, 239, 1) 100%);
+  background: linear-gradient(180deg, rgba(102, 155, 246, 1) 0%, rgba(64, 114, 239, 1) 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#669bf6", endColorstr="#4072ef", GradientType=1);
+
+  &.disabled {
+    background:#ccc;
+  }
+}

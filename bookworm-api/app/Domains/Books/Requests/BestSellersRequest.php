@@ -12,7 +12,7 @@ class BestSellersRequest extends FormRequest
     {
         return [
             'search' => ['nullable', 'string'],
-            'pageSize' => ['nullable', 'numeric', 'min:10', 'max:100']
+            'pageSize' => ['nullable', 'numeric', 'min:3', 'max:100']
         ];
     }
 }

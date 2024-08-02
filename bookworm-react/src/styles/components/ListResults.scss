@@ -54,10 +54,18 @@
                 transition: all 0.5s ease;
                 transform: scale(1.1);
                 cursor:pointer;
+                color:#c86b6b;
+            }
+            &.active svg {
+                color:#762e2e;
             }
         }
-        
+
+        &.ListItemLoading {
+            background-color:#9b9b9b;
+        }
     }
+    
 }
 
 

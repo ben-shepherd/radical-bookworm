@@ -1,270 +1,321 @@
-@use './variables.scss' as v; 
+@use './variables.scss' as v;
 @use './fonts.css';
 @use './headings.scss';
 @use './components/SearchBar.scss';
 @use './components/Gallery.scss';
 @use './components/ListResults.scss';
 @use './components/StylizedTextField.scss';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 
 body {
-    font-family: "Roboto", sans-serif;
-    font-weight: 400;
-    font-style: normal;
-    height: 100%;
-    margin: 0;
-    background-color: v.$appContentBg;;
+  font-family: "Roboto", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  height: 100%;
+  margin: 0;
+  background-color: v.$appContentBg;;
 }
 
 .App {
-    width: 100%;
-    height: 100%;
+  width: 100%;
+  height: 100%;
 }
-
 
 
 // Header Start
 header {
+  height: 100px;
+  min-width: 251px;
+
+  .user,
+  .radical {
     height: 100px;
-    min-width: 251px;
+  }
 
-    .user,
-    .radical {
-        height: 100px;
+  .user {
+    background-color: v.$headerUserBackgroundColor;
+    position: relative;
+  }
+
+  .avatar {
+    width: 60%;
+    height: 60%;
+    border-radius: 50%;
+    margin: 20% auto 0 auto;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+  }
+
+  .radical {
+    background-color: v.$headerLogoBackgroundColor;
+    font-weight: 700;
+    line-height: 100px;
+    text-align: left;
+
+    h1 {
+      font-size: 2em;
     }
 
-    .user {
-        background-color: v.$headerUserBackgroundColor;
-        position: relative;
+    span {
+      color: #8b201d;
     }
-
-    .avatar {
-        width:60%;
-        height: 60%;
-        border-radius: 50%;
-        margin: 20% auto 0 auto;
-        background-size: cover;
-        background-position: center;
-        background-repeat: no-repeat;
-    }
-
-    .radical {
-        background-color: v.$headerLogoBackgroundColor;
-        font-weight: 700;
-        line-height: 100px;
-        text-align: left;
-
-        h1 {
-            font-size: 2em;
-        }
-        span {
-            color: #8b201d;
-        }
-    }
+  }
 }
 
 .Sidebar {
-    background-color: v.$sidebarBackgroundColor;
-    color: v.$sidebarTextColor;
+  background-color: v.$sidebarBackgroundColor;
+  color: v.$sidebarTextColor;
 
-    .LinkItem li {
-        overflow:hidden;
-    }
+  .LinkItem li {
+    overflow: hidden;
+  }
 }
 
 main {
-    display: flex;
+  display: flex;
 
-    .AppContent {
-        background-color:  v.$appContentBg;
-        flex: 1 1 auto;
-    }
+  .AppContent {
+    background-color: v.$appContentBg;
+    flex: 1 1 auto;
+  }
+}
+
+
+.loadingGradient {
+  background: linear-gradient(180deg, #dfdfdf, #cacaca);
+  background-size: 400% 400%;
+
+  -webkit-animation: LoadingAnimation 3s ease infinite;
+  -moz-animation: LoadingAnimation 3s ease infinite;
+  animation: LoadingAnimation 3s ease infinite;
+}
+
+@-webkit-keyframes LoadingAnimation {
+  0% {
+    background-position: 2% 0%
+  }
+  50% {
+    background-position: 99% 100%
+  }
+  100% {
+    background-position: 2% 0%
+  }
+}
+
+@-moz-keyframes LoadingAnimation {
+  0% {
+    background-position: 2% 0%
+  }
+  50% {
+    background-position: 99% 100%
+  }
+  100% {
+    background-position: 2% 0%
+  }
+}
+
+@keyframes LoadingAnimation {
+  0% {
+    background-position: 2% 0%
+  }
+  50% {
+    background-position: 99% 100%
+  }
+  100% {
+    background-position: 2% 0%
+  }
 }
 
 /* Default styles for lg devices */
 @media (min-width: 1024px) {
 
-    // Sidebar Start
-    .Sidebar {
-        height: 100vh;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        overflow: visible;
-        position: sticky;
-        top: 0;
+  // Sidebar Start
+  .Sidebar {
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: visible;
+    position: sticky;
+    top: 0;
 
-        ul {
-            width: 100%;
-            overflow: visible;
-        }
-
-        li {
-            list-style-type: none;
-            height: 100px;
-            width: 7rem;
-
-            .text {
-                display: none;
-            }
-
-            button {
-                width:100%;
-                height:100%;
-                display: flex;
-                flex-direction: column;
-                justify-content: center;
-                align-items: center;
-                position:relative;
-            }
-            svg {
-                transform: scale(1.7);
-                height: 100%;
-                margin: 0 auto;
-            }
-
-            .divider {
-                position: absolute;
-                bottom:0;
-                height: 1px;
-                width: 2rem;
-                margin: 0 auto;
-                border-bottom: 1px solid v.$sidebarDividerColor;
-            }
-
-            &.active {
-                width: 8rem;
-                position: sticky;
-                border-top-right-radius: 15px;
-                border-bottom-right-radius: 15px;
-
-                background: rgb(102, 155, 246);
-                background: -moz-linear-gradient(180deg, rgba(102, 155, 246, 1) 0%, rgba(64, 114, 239, 1) 100%);
-                background: -webkit-linear-gradient(180deg, rgba(102, 155, 246, 1) 0%, rgba(64, 114, 239, 1) 100%);
-                background: linear-gradient(180deg, rgba(102, 155, 246, 1) 0%, rgba(64, 114, 239, 1) 100%);
-                filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#669bf6", endColorstr="#4072ef", GradientType=1);
-
-                .divider {
-                    opacity: 0;
-                }
-
-                svg {
-                    color: #fff;
-                }
-            }
-        }
+    ul {
+      width: 100%;
+      overflow: visible;
     }
-}
 
+    li {
+      list-style-type: none;
+      height: 100px;
+      width: 7rem;
+
+      .text {
+        display: none;
+      }
+
+      button {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+      }
+
+      svg {
+        transform: scale(1.7);
+        height: 100%;
+        margin: 0 auto;
+      }
+
+      .divider {
+        position: absolute;
+        bottom: 0;
+        height: 1px;
+        width: 2rem;
+        margin: 0 auto;
+        border-bottom: 1px solid v.$sidebarDividerColor;
+      }
+
+      &.active {
+        width: 8rem;
+        position: sticky;
+        border-top-right-radius: 15px;
+        border-bottom-right-radius: 15px;
+
+        background: rgb(102, 155, 246);
+        background: -moz-linear-gradient(180deg, rgba(102, 155, 246, 1) 0%, rgba(64, 114, 239, 1) 100%);
+        background: -webkit-linear-gradient(180deg, rgba(102, 155, 246, 1) 0%, rgba(64, 114, 239, 1) 100%);
+        background: linear-gradient(180deg, rgba(102, 155, 246, 1) 0%, rgba(64, 114, 239, 1) 100%);
+        filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#669bf6", endColorstr="#4072ef", GradientType=1);
+
+        .divider {
+          opacity: 0;
+        }
+
+        svg {
+          color: #fff;
+        }
+      }
+    }
+  }
+}
 
 
 /** Styles for devices below lg **/
 @media (min-width: 640px) and (max-width: 1024px) {
-    main {
-        flex-direction: column;
+  main {
+    flex-direction: column;
+  }
+
+  .Sidebar {
+    width: 100%;
+    height: 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    svg {
+      margin: 0 auto;
     }
-    
-    .Sidebar {
-        width: 100%;
-        height: 60px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
 
-        svg {
-            margin: 0 auto;
-        }
-
-        ul {
-            margin: 0 auto;
-            display: flex;
-        }
-
-        li {
-            display: flex;
-            width: 10rem;
-            justify-content: center;
-            text-align: center;
-
-            a {
-                width: 80%;
-            }
-
-            .divider {
-                width: 1px;
-                height: 60%;
-                position: relative;
-                top: 20%;
-                background-color: v.$sidebarDividerColor;
-            }
-
-            &:last-child {
-                .divider {
-                    display: none;
-                }
-            }
-        }
+    ul {
+      margin: 0 auto;
+      display: flex;
     }
+
+    li {
+      display: flex;
+      width: 10rem;
+      justify-content: center;
+      text-align: center;
+
+      a {
+        width: 80%;
+      }
+
+      .divider {
+        width: 1px;
+        height: 60%;
+        position: relative;
+        top: 20%;
+        background-color: v.$sidebarDividerColor;
+      }
+
+      &:last-child {
+        .divider {
+          display: none;
+        }
+      }
+    }
+  }
 }
 
 /* Styles for devices below sm */
 @media (max-width: 640px) {
-    main {
-        flex-direction: column;
+  main {
+    flex-direction: column;
+  }
+
+  header .user {
+    min-width: 100px;
+  }
+
+  .Sidebar {
+    width: 100%;
+    display: block;
+    height: auto;
+    justify-content: center;
+    align-items: center;
+
+    ul {
+      display: block;
+      margin: 10px 0;
     }
 
-    header .user {
-        min-width:100px;
-    }
+    li {
+      width: 100%;
+      transition: all 0.5s ease;
 
-    .Sidebar {
+      button {
         width: 100%;
-        display:block;
-        height: auto;
-        justify-content: center;
-        align-items: center;
+      }
 
-        ul {
-            display: block;
-            margin:10px 0;
-        }
-        li {
-            width: 100%;
-            transition: all 0.5s ease;
-
-            button {
-                width:100%;
-            }
-
-            &:last-child {
-                .divider {
-                    display: none;
-                }
-            }
-
-            &:hover {
-                transition: all 0.5s ease;
-                color: #fff;
-            }
-        }
-        svg {
-            margin:0 auto;
-        }
-        a {
-            text-align: center;
-        }
+      &:last-child {
         .divider {
-            display:block;
-            height:1px;
-            width:25%;
-            margin:15px auto;
-            top:unset;
-            background-color: v.$sidebarDividerColor;
-            opacity: 0.5;
+          display: none;
         }
+      }
 
+      &:hover {
+        transition: all 0.5s ease;
+        color: #fff;
+      }
     }
+
+    svg {
+      margin: 0 auto;
+    }
+
+    a {
+      text-align: center;
+    }
+
+    .divider {
+      display: block;
+      height: 1px;
+      width: 25%;
+      margin: 15px auto;
+      top: unset;
+      background-color: v.$sidebarDividerColor;
+      opacity: 0.5;
+    }
+
+  }
 }

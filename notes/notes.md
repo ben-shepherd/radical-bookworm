@@ -5,7 +5,8 @@ I've used Docker for hosting all the required apps. I've took advantage of ChatG
 - I've had to create a Command to update books, which runs NYTimes API and stores all books. Due to rate quota being reached fairly quick, I've resorted to faking some of the data for testing purposes. In theory with the code I have wrote, you could quite easily replace DB queries with the requests to the NyTimes API
 
 ## Issues frontend
-- Need to adjust the search endpoint to call the NyTimes API, then once a user has selected a book, add it to the internal DB
+- No global state used (causes some minor issues, like loading favourites and should automatically have the icon light up)
+-- Already know Redux, but too bulky. Think I need to properly look into useContext or Mobx
 
 ## Issues backend
 none! (yet)

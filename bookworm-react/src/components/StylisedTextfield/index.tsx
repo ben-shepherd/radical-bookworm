@@ -5,7 +5,7 @@ type Props = {
     EditComponent?: React.ReactNode;
 }
 
-const StylizedTextField = ({ label, EditComponent, value, onChange }: Props) => {
+const StylizedTextField = ({ label, EditComponent, value, onChange, ...inputProps }: Props & React.InputHTMLAttributes<HTMLInputElement>) => {
 
     const handleChange = (value: string) => {
         if(typeof onChange === 'function') {
@@ -19,7 +19,7 @@ const StylizedTextField = ({ label, EditComponent, value, onChange }: Props) => 
         }
 
         return (
-            <input type='text' value={value} onChange={(e) => handleChange(e.target.value)} />
+            <input type='text' value={value} onChange={(e) => handleChange(e.target.value)} {...inputProps} />
         )
     };
 

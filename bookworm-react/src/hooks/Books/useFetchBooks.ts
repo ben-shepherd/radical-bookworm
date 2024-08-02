@@ -14,7 +14,7 @@ type SearchProps = {
 type Response = {
     books: Book[]
     setBooks: Dispatch<SetStateAction<Book[]>>;
-    refresh: (props: SearchProps) => Promise<void>;
+    refresh: (props: SearchProps) => Promise<Book[] | null>;
     loading: boolean;
 }
 
@@ -22,11 +22,11 @@ const useFetchBooks = ({ autoload = false }: Props = {}): Response => {
     const [books, setBooks] = useState<Book[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
   
-    const fetchBooks = async ({ search = '', resultsEmptyWhenSearchEmpty }: SearchProps = {}) => {
+    const fetchBooks = async ({ search = '', resultsEmptyWhenSearchEmpty }: SearchProps = {}): Promise<Book[] | null> => {
 
         if((search ?? '').length === 0 && resultsEmptyWhenSearchEmpty) {
             setBooks([])
-            return;
+            return null;
         }
 
         setLoading(true);
@@ -37,11 +37,14 @@ const useFetchBooks = ({ autoload = false }: Props = {}): Response => {
             })
         )
 
+        setLoading(false);
+
         if (response.ok) {
             setBooks(response.json)
+            return response.json
         }
 
-        setLoading(false);
+        return []
     }
 
     useEffect(() => {

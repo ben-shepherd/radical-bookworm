@@ -3,15 +3,21 @@ import { useNavigate } from "react-router-dom";
 import './styles.scss';
 
 type Props = {
-    url: string
-    text: string
+    url: string;
+    text: string;
+    onClick?: (...args: any[]) => any;
 }
 
-const ReturnToLink = ({ url, text }: Props) => {
+const ReturnToLink = ({ url, text, onClick }: Props) => {
     const navigate = useNavigate();
 
     const handleClick = (e: any) => {
         e.preventDefault()
+
+        if(typeof onClick === 'function') {
+            onClick()
+        }
+
         navigate(url)
     }
 
