@@ -3,7 +3,7 @@
 namespace App\Console\Commands;
 
 
-use App\Models\User;
+use App\Domains\Books\Services\APIs\NyTimesService;
 use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Console\Command;
 
@@ -29,12 +29,11 @@ class Debug extends Command
      */
     public function handle()
     {
-        $user = User::query()->first();
+        /** @var NyTimesService $api */
+        $api = app()->make(NyTimesService::class);
 
-        $favouriteBooks = $user->favouriteBooks()->with('book')->get();
-
-        dd($favouriteBooks[0]->book);
-
-
+        dd(
+            $api->getBooks()
+        );
     }
 }

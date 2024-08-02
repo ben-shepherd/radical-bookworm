@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace App\Domains\Books\ServiceProviders;
 
+use App\Domains\Books\Contracts\BooksApiServiceContract;
 use App\Domains\Books\Middleware\BooksMiddleware;
 use App\Domains\Books\Services\APIs\NyTimesService;
+use App\Domains\Books\Services\BooksApiService;
 use GuzzleHttp\Client;
 use GuzzleHttp\ClientInterface;
 use Illuminate\Http\Middleware\HandleCors;
@@ -18,6 +20,9 @@ class BookServiceProvider extends ServiceProvider
     public function register(): void
     {
         $nyTimesBaseUrl = config('books.nytimes.baseUrl');
+
+        // Services
+        $this->app->bind(BooksApiServiceContract::class, BooksApiService::class);
 
         // Setup NyTimes Book Api
         $this->app->when(NyTimesService::class)

@@ -4,7 +4,10 @@ declare(strict_types=1);
 
 namespace App\Domains\Books\Controllers;
 
+use App\Domains\Books\DTOs\BookDTO;
+use App\Domains\Books\Factory\BookFactory;
 use App\Domains\Books\Repository\BookRepository;
+use App\Domains\Books\Requests\BookCreateRequest;
 use App\Domains\Books\Requests\BookIndexRequest;
 use App\Domains\Books\Requests\BookUpdateRequest;
 use App\Http\Controllers\Controller;
@@ -24,6 +27,33 @@ class BooksController extends Controller
             $repository->findManyBySearchQuery($search, $page, $pageSize)->get()
         );
     }
+
+    public function store(BookFactory $factory, BookRepository $repository, BookCreateRequest $request): JsonResponse
+    {
+        $validated = $request->validated();
+
+        try {
+            $book = $repository->findByExternalId($validated['externalId']);
+            return new JsonResponse($book);
+        } catch (ModelNotFoundException $e) {
+            // do nothing
+        }
+
+        $bookDTO = new BookDTO(
+            $validated['externalId'] ?? '',
+            $validated['title'] ?? '',
+            $validated['authors'] ?? [],
+            $validated['description'] ?? '',
+            $validated['image'] ?? '',
+            $validated['link'] ?? ''
+        );
+
+        $book = $factory->createFromDTO($bookDTO);
+        $book->save();
+
+        return new JsonResponse($book);
+    }
+
 
     public function show(BookRepository $repository, string $id): JsonResponse
     {

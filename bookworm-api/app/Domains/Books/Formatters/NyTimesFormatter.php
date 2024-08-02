@@ -24,11 +24,12 @@ class NyTimesFormatter implements FormatterContract
     public function formatBookDetailsArray(array $data): array
     {
         return array_map(function ($item) {
+
             $externalId = $item['primary_isbn13'] ?? null;
             $title = $item['title'] ?? '';
             $description = $item['description'] ?? '';
             $authors = [$item['author'] ?? ''];
-            $image = '';
+            $image = "https://picsum.photos/536/354.jpg?v=" . $externalId;
             $url = '';
 
             return new BookDTO(

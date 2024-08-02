@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace App\Domains\Books\Services\APIs;
 
-use App\Domains\Books\Contracts\UpdateBooksContract;
+use App\Domains\Books\Contracts\ApiContract;
 use App\Domains\Books\DTOs\BookNameDTO;
 use App\Domains\Books\DTOs\Services\APIs\NyTimesRequestListOptions;
+use App\Domains\Books\DTOs\Services\BooksApiGetOptionsDTO;
 use App\Domains\Books\DTOs\UpdateBooksOptionsDTO;
 use App\Domains\Books\Factory\BookFactory;
 use App\Domains\Books\Faker\FakeListResponse;
@@ -17,9 +18,8 @@ use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\RequestException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Log;
 
-readonly class NyTimesService implements UpdateBooksContract
+readonly class NyTimesService implements ApiContract
 {
     public function __construct(
         private ClientInterface  $client,
@@ -30,6 +30,32 @@ readonly class NyTimesService implements UpdateBooksContract
     {
     }
 
+    public function getBooks(BooksApiGetOptionsDTO $options): Collection
+    {
+        $booksArrayUnformatted = $this->requestBooks($options->filterByCategory);
+        $bookDTOs = $this->formatter->formatBookDetailsArray($booksArrayUnformatted);
+        $booksArray = collect(
+            array_map(function ($bookDto) {
+                return $bookDto->toArray();
+            }, $bookDTOs)
+        );
+
+        if (strlen($options->search) > 0) {
+            $search = strtolower($options->search);
+
+            $booksArray = $booksArray->filter(function ($book) use ($search) {
+                $author = $book['authors'][0] ?? '';
+
+                return str_contains(strtolower($book['title']), $search)
+                    || str_contains(strtolower($book['description']), $search)
+                    || str_contains(strtolower($author), $search);
+            });
+        }
+
+        return !is_numeric($options->pageSize) ? $booksArray : $booksArray->take($options->pageSize);
+
+    }
+
     /**
      * Refreshes all books, updates or creates new books.
      * @param UpdateBooksOptionsDTO $options
@@ -37,8 +63,6 @@ readonly class NyTimesService implements UpdateBooksContract
      */
     public function updateBooks(UpdateBooksOptionsDTO $options): Collection
     {
-        Log::info(__CLASS__ . '@' . __FUNCTION__);
-
         $results = collect();
 
         /**
@@ -49,16 +73,12 @@ readonly class NyTimesService implements UpdateBooksContract
 
         $bookDTOs = $this->formatter->formatBookDetailsArray($response);
 
-        Log::info('Found ' . count($bookDTOs) . ' bookDTOs');
-
         foreach ($bookDTOs as $bookDto) {
 
             $book = null;
 
             try {
                 $book = $this->repository->findByExternalId($bookDto->externalId);
-
-                Log::info('Updating book with externalId: ' . $bookDto->externalId . ' Name: ' . $bookDto->title);
 
                 $book->title = $bookDto->title;
                 $book->authors = $bookDto->authors;
@@ -75,9 +95,7 @@ readonly class NyTimesService implements UpdateBooksContract
                 // do nothing
             }
 
-            Log::info('Creating book with externalId: ' . $bookDto->externalId . ' Name: ' . $bookDto->title);
-
-            $book = $this->factory->createFromArray($bookDto);
+            $book = $this->factory->createFromDTO($bookDto);
             $book->save();
             $results->push($book);
         }
@@ -118,9 +136,8 @@ readonly class NyTimesService implements UpdateBooksContract
                     $resultItem['list_name']
                 );
             }, $response['body']['results'] ?? []);
-        } catch (RequestException $e) {
-            Log::warning('requestNames exception. Code: ' . $e->getResponse()->getStatusCode());
 
+        } catch (RequestException $e) {
             if ($e->getResponse()->getStatusCode() === 429) {
                 return (new FakeNamesResponse())->toArray();
             }
@@ -130,20 +147,32 @@ readonly class NyTimesService implements UpdateBooksContract
     /**
      * Iterates through names to retrieve an updated list of books
      */
-    public function requestBooks(): array
+    public function requestBooks($category = null): array
     {
+        if ($category) {
+            return $this->getBookDetailsFromResponse(
+                $this->requestList(
+                    new NyTimesRequestListOptions($category)
+                )
+            );
+        }
+
         $nameDTOs = $this->requestNames();
         $results = [];
 
-        Log::info(__CLASS__ . '@' . __FUNCTION__ . ': Found ' . count($nameDTOs) . ' nameDTOs');
-
         foreach ($nameDTOs as $nameDTO) {
 
+            // If the nameDTO is not an instance of BookNameDTO, we skip it (bug where it can be string sometimes)
+            if ($nameDTO instanceof BookNameDTO === false) {
+                continue;
+            }
+
+            if ($category && $nameDTO->listForUrl !== $category) {
+                continue;
+            }
             $response = $this->requestList(
                 new NyTimesRequestListOptions($nameDTO->listForUrl)
             );
-
-            Log::info('Found ' . count($response['results'] ?? []) . ' books for ' . $nameDTO->name);
 
             $results = array_merge($results, $this->getBookDetailsFromResponse($response));
         }
@@ -162,8 +191,6 @@ readonly class NyTimesService implements UpdateBooksContract
 
             $url = sprintf('lists/%s/%s.json', $bestSellersDate, $optionsDTO->list);
 
-            Log::info(__CLASS__ . '@' . __FUNCTION__ . ': URL: ' . $url);
-
             return json_decode(
                 $this->client->request('GET', $url, $this->guzzleOptionsWithApiKey([
                     'query' => [
@@ -175,9 +202,6 @@ readonly class NyTimesService implements UpdateBooksContract
                 true
             );
         } catch (RequestException $e) {
-            Log::warning('requestList exception. Code: ' . $e->getResponse()->getStatusCode());
-
-
             if ($e->getResponse()->getStatusCode() === 429) {
                 return (new FakeListResponse())->toArray();
             }

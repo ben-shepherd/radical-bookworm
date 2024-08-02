@@ -1,9 +1,11 @@
 ## Hosting
 I've used Docker for hosting all the required apps. I've took advantage of ChatGPT to help with building out the configuration files.
 
+## Logic issues
+- I've had to create a Command to update books, which runs NYTimes API and stores all books. Due to rate quota being reached fairly quick, I've resorted to faking some of the data for testing purposes. In theory with the code I have wrote, you could quite easily replace DB queries with the requests to the NyTimes API
+
 ## Issues frontend
-The header background color (for RADICAL logo) does not match the design
-The sidebar icon does not update to active when a different page is loaded (Always sticks to the homepage (chart icon))
+- Need to adjust the search endpoint to call the NyTimes API, then once a user has selected a book, add it to the internal DB
 
 ## Issues backend
 none! (yet)

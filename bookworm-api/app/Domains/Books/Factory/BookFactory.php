@@ -15,7 +15,7 @@ class BookFactory extends Factory
         parent::__construct($modelClass);
     }
 
-    public function createFromArray(BookDTO $data): Book
+    public function createFromDTO(BookDTO $data): Book
     {
         $book = new Book();
         $book->externalId = $data->externalId;
