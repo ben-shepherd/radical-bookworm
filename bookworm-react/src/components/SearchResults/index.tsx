@@ -1,6 +1,7 @@
 import ListResults from 'components/ListResults';
+import { ListItemEventProps } from 'components/ListResults/ListItem';
 import React from 'react';
-import {Book} from 'types/books.t';
+import { Book } from 'types/books.t';
 
 type Props = {
     results: Book[];
@@ -14,16 +15,15 @@ const SearchResults = ({
                            results,
                            PreSearchComponent,
                            PostSearchComponent,
-                           onClick,
-                           onRefresh
-                       }: Props): React.ReactNode => {
+                           ...listItemProps
+                       }: Props & ListItemEventProps ): React.ReactNode => {
 
     if (PreSearchComponent && results.length === 0) {
         return PreSearchComponent()
     }
 
     return PostSearchComponent(
-        <ListResults results={results} onClick={onClick} onRefresh={onRefresh}/>
+        <ListResults results={results} {...listItemProps} />
     )
 }
 

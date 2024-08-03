@@ -2,12 +2,20 @@
 
 namespace App\Domains\Books\Contracts;
 
+use App\Domains\Books\DTOs\BookDTO;
 use App\Domains\Books\DTOs\Services\BooksApiGetOptionsDTO;
 use Illuminate\Support\Collection;
 
 interface BooksApiServiceContract
 {
-    public function getBooks(BooksApiGetOptionsDTO $options): Collection;
+    /**
+     * @param BooksApiGetOptionsDTO $options
+     * @return Collection<BookDTO>
+     */
+    public function getBookDTOs(BooksApiGetOptionsDTO $options): Collection;
 
-    public function updateBooks(): void;
+    /**
+     * @return Collection<BookDTO>
+     */
+    public function updateBooks(BooksApiGetOptionsDTO $options): Collection;
 }

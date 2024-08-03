@@ -10,7 +10,8 @@
         "jenssegers/mongodb": "^4.7",
         "laravel/framework": "^11.9",
         "laravel/tinker": "^2.9",
-        "mongodb/laravel-mongodb": "^4.7"
+        "mongodb/laravel-mongodb": "^4.7",
+        "ext-mongodb": "*"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",

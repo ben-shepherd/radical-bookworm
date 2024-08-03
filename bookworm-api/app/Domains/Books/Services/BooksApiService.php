@@ -8,18 +8,27 @@ use App\Domains\Books\Contracts\ApiContract;
 use App\Domains\Books\Contracts\BooksApiServiceContract;
 use App\Domains\Books\DTOs\BookDTO;
 use App\Domains\Books\DTOs\Services\BooksApiGetOptionsDTO;
-use App\Domains\Books\DTOs\UpdateBooksOptionsDTO;
 use App\Domains\Books\Exceptions\BooksApiException;
+use App\Domains\Books\Factory\BookFactory;
+use App\Domains\Books\Repository\BookRepository;
 use Illuminate\Contracts\Container\BindingResolutionException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Collection;
 
 class BooksApiService implements BooksApiServiceContract
 {
+    public function __construct(
+        private readonly BookRepository $bookRepository,
+        private readonly BookFactory    $bookFactory
+    )
+    {
+    }
+
     /**
      * @return Collection<BookDTO>
      * @throws BooksApiException|BindingResolutionException
      */
-    public function getBooks(BooksApiGetOptionsDTO $options): Collection
+    public function getBookDTOs(BooksApiGetOptionsDTO $options): Collection
     {
         $results = collect();
 
@@ -27,7 +36,7 @@ class BooksApiService implements BooksApiServiceContract
             /**
              * @var ApiContract $api
              */
-            $books = $api->getBooks($options);
+            $books = $api->getBookDTOs($options);
             $results = $results->merge($books);
         });
 
@@ -42,14 +51,43 @@ class BooksApiService implements BooksApiServiceContract
      * @throws BooksApiException
      * @throws BindingResolutionException
      */
-    public function updateBooks(): void
+    public function updateBooks(BooksApiGetOptionsDTO $options): Collection
     {
-        $this->iterateThroughAPIs(function ($api) {
+        $results = collect();
+
+        $this->iterateThroughAPIs(function ($api) use (&$results, $options) {
             /**
              * @var ApiContract $api
              */
-            $api->updateBooks(new UpdateBooksOptionsDTO());
+            $bookDTOs = $api->getBookDTOs($options);
+
+            foreach ($bookDTOs as $bookDTO) {
+                try {
+                    $book = $this->bookRepository->findByExternalId($bookDTO->externalId);
+
+                    $book->title = $bookDTO->title;
+                    $book->authors = $bookDTO->authors;
+                    $book->description = $bookDTO->description;
+                    // Don't overwrite the image (we want to keep picsum URL)
+                    //$book->image = $bookDto->image;
+                    $book->link = $bookDTO->link;
+                    $book->save();
+
+                    $results->push($book);
+                    continue;
+
+                } catch (ModelNotFoundException $e) {
+                    // do nothing
+                }
+
+                // Create for the first time
+                $book = $this->bookFactory->createFromDTO($bookDTO);
+                $book->save();
+                $results->push($book);
+            }
         });
+
+        return $results;
     }
 
     /**

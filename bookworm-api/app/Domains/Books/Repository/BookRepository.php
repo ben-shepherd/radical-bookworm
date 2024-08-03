@@ -46,7 +46,9 @@ class BookRepository extends Repository
         return $user->favouriteBooks()
             ->with('book')
             ->get()
+            ->filter(fn($bookFavourite) => $bookFavourite['book'] instanceof Book)
             ->select(['book'])
-            ->map(fn($bookFavourite) => $bookFavourite['book']);
+            ->map(fn($bookFavourite) => $bookFavourite['book'])
+            ->values();
     }
 }

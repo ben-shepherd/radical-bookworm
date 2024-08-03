@@ -5,102 +5,47 @@ declare(strict_types=1);
 namespace App\Domains\Books\Services\APIs;
 
 use App\Domains\Books\Contracts\ApiContract;
+use App\Domains\Books\DTOs\BookDTO;
 use App\Domains\Books\DTOs\BookNameDTO;
 use App\Domains\Books\DTOs\Services\APIs\NyTimesRequestListOptions;
 use App\Domains\Books\DTOs\Services\BooksApiGetOptionsDTO;
-use App\Domains\Books\DTOs\UpdateBooksOptionsDTO;
-use App\Domains\Books\Factory\BookFactory;
 use App\Domains\Books\Faker\FakeListResponse;
 use App\Domains\Books\Faker\FakeNamesResponse;
 use App\Domains\Books\Formatters\NyTimesFormatter;
-use App\Domains\Books\Repository\BookRepository;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\RequestException;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Log;
 
 readonly class NyTimesService implements ApiContract
 {
     public function __construct(
         private ClientInterface  $client,
-        private NyTimesFormatter $formatter,
-        private BookRepository   $repository,
-        private BookFactory      $factory,
+        private NyTimesFormatter $formatter
     )
     {
     }
 
-    public function getBooks(BooksApiGetOptionsDTO $options): Collection
+    public function getBookDTOs(BooksApiGetOptionsDTO $options): Collection
     {
-        $booksArrayUnformatted = $this->requestBooks($options->filterByCategory);
-        $bookDTOs = $this->formatter->formatBookDetailsArray($booksArrayUnformatted);
-        $booksArray = collect(
-            array_map(function ($bookDto) {
-                return $bookDto->toArray();
-            }, $bookDTOs)
-        );
+        $unformattedBooksArray = $this->requestBooks($options->filterByCategory);
+
+        $bookDTOs = collect($this->formatter->formatBookDetailsArray($unformattedBooksArray));
 
         if (strlen($options->search) > 0) {
             $search = strtolower($options->search);
 
-            $booksArray = $booksArray->filter(function ($book) use ($search) {
-                $author = $book['authors'][0] ?? '';
+            $bookDTOs = $bookDTOs->filter(function (BookDTO $book) use ($search) {
+                $author = $book->authors[0] ?? '';
 
-                return str_contains(strtolower($book['title']), $search)
-                    || str_contains(strtolower($book['description']), $search)
+                return str_contains(strtolower($book->title), $search)
+                    || str_contains(strtolower($book->description), $search)
                     || str_contains(strtolower($author), $search);
             });
         }
 
-        return !is_numeric($options->pageSize) ? $booksArray : $booksArray->take($options->pageSize);
+        return !is_numeric($options->pageSize) ? $bookDTOs : $bookDTOs->take($options->pageSize);
 
-    }
-
-    /**
-     * Refreshes all books, updates or creates new books.
-     * @param UpdateBooksOptionsDTO $options
-     * @return Collection
-     */
-    public function updateBooks(UpdateBooksOptionsDTO $options): Collection
-    {
-        $results = collect();
-
-        /**
-         * Response Example
-         * array([title => string, description => string, primary_isbn13 => string, ...])
-         */
-        $response = $this->requestBooks();
-
-        $bookDTOs = $this->formatter->formatBookDetailsArray($response);
-
-        foreach ($bookDTOs as $bookDto) {
-
-            $book = null;
-
-            try {
-                $book = $this->repository->findByExternalId($bookDto->externalId);
-
-                $book->title = $bookDto->title;
-                $book->authors = $bookDto->authors;
-                $book->description = $bookDto->description;
-                // Don't overwrite the image (we want to keep picsum URL)
-                //$book->image = $bookDto->image;
-                $book->link = $bookDto->link;
-                $book->save();
-
-                $results->push($book);
-                continue;
-
-            } catch (ModelNotFoundException $e) {
-                // do nothing
-            }
-
-            $book = $this->factory->createFromDTO($bookDto);
-            $book->save();
-            $results->push($book);
-        }
-
-        return $results;
     }
 
     /**
@@ -145,6 +90,8 @@ readonly class NyTimesService implements ApiContract
                 return $handleResponse((new FakeNamesResponse())->toArray());
             }
         }
+
+        return $handleResponse([]);
     }
 
     /**
@@ -152,6 +99,8 @@ readonly class NyTimesService implements ApiContract
      */
     public function requestBooks($category = null): array
     {
+        Log::info(__CLASS__ . '::' . __FUNCTION__ . '(' . $category . ')');
+
         if ($category) {
             return $this->getBookDetailsFromResponse(
                 $this->requestList(
@@ -163,6 +112,8 @@ readonly class NyTimesService implements ApiContract
         $nameDTOs = $this->requestNames();
         $results = [];
 
+        Log::info('Names: ' . json_encode($nameDTOs));
+
         foreach ($nameDTOs as $nameDTO) {
 
             // If the nameDTO is not an instance of BookNameDTO, we skip it (bug where it can be string sometimes)
@@ -170,11 +121,17 @@ readonly class NyTimesService implements ApiContract
                 continue;
             }
 
-            $response = $this->requestList(
-                new NyTimesRequestListOptions($nameDTO->listForUrl)
-            );
+            $options = new NyTimesRequestListOptions($nameDTO->listForUrl);
 
-            $results = array_merge($results, $this->getBookDetailsFromResponse($response));
+            Log::info('Current name: ' . $nameDTO->listForUrl . ' Options: ' . json_encode($options));
+
+            $response = $this->requestList($options);
+
+            $bookDetailsArray = $this->getBookDetailsFromResponse($response);
+
+            Log::info('List response: ' . count($bookDetailsArray));
+
+            $results = array_merge($results, $bookDetailsArray);
         }
 
         return $results;
@@ -190,22 +147,23 @@ readonly class NyTimesService implements ApiContract
             $publishedDate = $optionsDTO->publishedDate ?? 'current';
 
             $url = sprintf('lists/%s/%s.json', $bestSellersDate, $optionsDTO->list);
+            $options = $this->guzzleOptionsWithApiKey([
+                'query' => [
+                    'published_date' => $publishedDate,
+                    'offset' => $optionsDTO->offset ?? 0,
+                ]
+            ]);
+            $response = json_decode($this->client->request('GET', $url, $options)->getBody()->getContents(), true);
 
-            return json_decode(
-                $this->client->request('GET', $url, $this->guzzleOptionsWithApiKey([
-                    'query' => [
-                        'published_date' => $publishedDate,
-                        'offset' => $optionsDTO->offset ?? 0,
-                    ]
-                ]))->getBody()->getContents()
-                ,
-                true
-            );
+            return $response['body'] ?? [];
+
         } catch (RequestException $e) {
             if ($e->getResponse()->getStatusCode() === 429) {
                 return (new FakeListResponse())->toArray();
             }
         }
+
+        return [];
     }
 
     /**
@@ -215,7 +173,7 @@ readonly class NyTimesService implements ApiContract
     {
         $bookDetails = array_map(function ($resultItem) {
             return $resultItem['book_details'][0] ?? null;
-        }, $response['results'] ?? []);
+        }, $response);
 
         return array_filter($bookDetails, fn($bookDetail) => $bookDetail !== null);
     }

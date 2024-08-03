@@ -1,22 +1,24 @@
-import Api from 'api/Api';
-import ErrorThrower from 'api/ErrorThrower';
 import SearchResults from 'components/SearchResults';
 import useBestSellers from 'hooks/Books/useBestSellers';
+import useCreateBook from 'hooks/Books/useCreateBook';
 import useFavouriteBooks from 'hooks/Books/useFavouriteBooks';
-import {useCallback, useEffect, useState} from 'react';
-import {useNavigate} from 'react-router-dom';
-import {Book} from 'types/books.t';
+import { enqueueSnackbar } from "notistack";
+import { useCallback, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Book } from 'types/books.t';
 import Gallery from '../../../components/Gallery';
+import ReturnToLink from "../../../components/ReturnToLink";
 import SearchBar from '../../../components/SearchBar';
 import Content from '../../../components/theme/Content';
 import useFetchBooks from '../../../hooks/Books/useFetchBooks';
-import ReturnToLink from "../../../components/ReturnToLink";
-import {enqueueSnackbar} from "notistack";
 
 const Home = () => {
     const navigate = useNavigate();
 
     const [search, setSearch] = useState<string>('');
+
+    const { createBook } = useCreateBook()
+
     const {
         books: booksSearchResults,
         loading: loadingSearchResults,
@@ -31,24 +33,11 @@ const Home = () => {
         refresh: refreshBooksFavourites
     } = useFavouriteBooks()
 
-    const handleCreateBook = async (book: Book) => {
-        const response = ErrorThrower(
-            await Api<Book>('/books', {
-                method: 'POST',
-                body: JSON.stringify(book)
-            })
-        )
+    const handleClick = async (book: Book) => {
+        const response = await createBook(book);
 
         if (response.ok) {
-            return response.json
-        }
-    }
-
-    const handleClick = async (book: Book) => {
-        const bookWithId = await handleCreateBook(book);
-
-        if (bookWithId) {
-            navigate(`/edit/${bookWithId._id}`);
+            navigate(`/edit/${response.json._id}`);
         }
     }
 

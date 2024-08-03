@@ -1,6 +1,6 @@
-import {Book} from 'types/books.t';
-import ListItem from './ListItem';
+import { Book } from 'types/books.t';
 import useFavouriteBooks from "../../hooks/Books/useFavouriteBooks";
+import ListItem, { ListItemEventProps } from './ListItem';
 
 type Props = {
     results: Book[]
@@ -8,15 +8,16 @@ type Props = {
     onRefresh?: (...args: any[]) => any;
 }
 
-const ListResults = ({results, onClick, onRefresh}: Props) => {
+const ListResults = ({ results, ...listItemProps }: Props & ListItemEventProps) => {
 
-    const {books: favouriteBooks} = useFavouriteBooks()
+    const { books: favouriteBooks } = useFavouriteBooks()
 
     return (
         <div className="ListResults">
             {results.map((book: Book) => (
-                <ListItem className='mb-5' key={book._id} book={book} onClick={onClick} onRefresh={onRefresh}
-                          favouriteBooks={favouriteBooks}/>
+                <ListItem className='mb-5' key={book._id} book={book}
+                    favouriteBooks={favouriteBooks}
+                    {...listItemProps} />
             ))}
         </div>
     )

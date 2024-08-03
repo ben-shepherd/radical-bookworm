@@ -1,15 +1,21 @@
+import Api from 'api/Api';
+import ErrorThrower from 'api/ErrorThrower';
 import SearchResults from 'components/SearchResults';
+import useCreateBook from 'hooks/Books/useCreateBook';
 import useFavouriteBooks from 'hooks/Books/useFavouriteBooks';
-import {useMemo, useState} from 'react';
-import {useNavigate} from 'react-router-dom';
-import {Book} from 'types/books.t';
+import { enqueueSnackbar } from 'notistack';
+import { useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Book } from 'types/books.t';
+import ListResultsLoading from "../../../components/ListResults/ListResultsLoading";
 import SearchBar from '../../../components/SearchBar';
 import Content from '../../../components/theme/Content';
-import ListResultsLoading from "../../../components/ListResults/ListResultsLoading";
 
 const Favourites = () => {
     const navigate = useNavigate();
     const [search, setSearch] = useState<string>('');
+
+    const { createBook } = useCreateBook()
 
     const {books: booksFavourites, loading, refresh} = useFavouriteBooks();
 
@@ -19,9 +25,28 @@ const Favourites = () => {
             : booksFavourites;
     }, [search, booksFavourites]);
 
-    const handleClick = (book: Book) => {
-        navigate(`/edit/${book._id}`);
+    const handleClick = async (book: Book) => {
+        const response = await createBook(book);
+
+        if(response.ok) {
+            navigate(`/edit/${response.json._id}`);
+        }
     };
+
+    const handleDelete = async (book: Book) => {
+        if(!book._id) return;
+
+        const response = ErrorThrower(
+            await Api<{success: true}>(`books/${book._id}`, {
+                method: 'DELETE'
+            })
+        )
+
+        if(response.ok) {
+            enqueueSnackbar({message: 'Book has been deleted!', variant: 'success'})
+            refresh()
+        }
+    }
 
     return (
         <Content id='favourites'>
@@ -30,6 +55,8 @@ const Favourites = () => {
                 results={filteredBooks}
                 onClick={handleClick}
                 onRefresh={refresh}
+                onEdit={handleClick}
+                onDelete={handleDelete}
                 PreSearchComponent={() => (
                     <div className='pre-search'>
 

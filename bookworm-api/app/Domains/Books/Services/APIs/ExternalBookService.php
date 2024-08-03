@@ -17,7 +17,7 @@ readonly class ExternalBookService implements ApiContract
     {
     }
 
-    public function getBooks(BooksApiGetOptionsDTO $options): Collection
+    public function getBookDTOs(BooksApiGetOptionsDTO $options): Collection
     {
         return collect(
             $this->formatter->formatBookDetailsArray(

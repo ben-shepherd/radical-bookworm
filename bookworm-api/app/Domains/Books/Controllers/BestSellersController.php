@@ -26,7 +26,7 @@ class BestSellersController extends Controller
         }
 
         $books = cache()->remember($cacheKey, now()->addMinutes(5)->toDate(), function () use ($booksApiService, $options) {
-            return $booksApiService->getBooks($options)->toArray();
+            return $booksApiService->getBookDTOs($options)->toArray();
         });
 
         return new JsonResponse($books);

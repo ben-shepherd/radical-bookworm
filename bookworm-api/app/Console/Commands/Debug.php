@@ -35,7 +35,7 @@ class Debug extends Command
         $api = app()->make(ExternalBookService::class);
 
         dd(
-            $api->getBooks(new BooksApiGetOptionsDTO())
+            $api->getBookDTOs(new BooksApiGetOptionsDTO())
         );
     }
 }
