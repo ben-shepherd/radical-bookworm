@@ -6,6 +6,16 @@ namespace App\Domains\Books\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
+
+/**
+ * @OA\Schema(
+ *     schema="BookUpdateRequest",
+ *     type="object",
+ *     required={"price", "rating"},
+ *     @OA\Property(property="price", type="number", format="float"),
+ *     @OA\Property(property="rating", type="number", format="float"),
+ * )
+ */
 class BookUpdateRequest extends FormRequest
 {
     public function rules(): array

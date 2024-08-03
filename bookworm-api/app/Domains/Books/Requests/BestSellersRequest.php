@@ -6,6 +6,17 @@ namespace App\Domains\Books\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
+
+/**
+ * @OA\Schema(
+ *     title="BestSellersRequest",
+ *     description="Request to get best selling books",
+ *     type="object",
+ *     required={"search", "pageSize"},
+ *     @OA\Property(property="search", type="string", example="Harry Potter"),
+ *     @OA\Property(property="pageSize", type="integer", example=20)
+ * )
+ */
 class BestSellersRequest extends FormRequest
 {
     public function rules(): array
