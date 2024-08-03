@@ -1,7 +1,7 @@
 import Api from 'api/Api';
 import ErrorThrower from 'api/ErrorThrower';
-import { Dispatch, SetStateAction, useEffect, useState } from 'react';
-import { Book } from '../../types/books.t';
+import {Dispatch, SetStateAction, useEffect, useState} from 'react';
+import {Book} from '../../types/books.t';
 
 type Props = {
     id?: string | null;
@@ -17,13 +17,13 @@ type Response = {
     loading: boolean;
 }
 
-const useBookById = ({ id = null, autoload = false }: Props = {}): Response => {
+const useBookById = ({id = null, autoload = false}: Props = {}): Response => {
     const [book, setBook] = useState<Book | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
-  
-    const fetchBook = async ({ id = null }: SearchProps): Promise<Book | null> => {
 
-        if(!id) {
+    const fetchBook = async ({id = null}: SearchProps): Promise<Book | null> => {
+
+        if (!id) {
             setBook(null)
             return null
         }
@@ -31,7 +31,7 @@ const useBookById = ({ id = null, autoload = false }: Props = {}): Response => {
         setLoading(true);
 
         const response = ErrorThrower(
-            await Api<Book>(`books/v1/books/${id}`, {
+            await Api<Book>(`/books/${id}`, {
                 method: 'GET',
             })
         )
@@ -48,7 +48,7 @@ const useBookById = ({ id = null, autoload = false }: Props = {}): Response => {
 
     useEffect(() => {
         if (autoload) {
-            fetchBook({ id })
+            fetchBook({id})
         }
     }, [autoload])
 

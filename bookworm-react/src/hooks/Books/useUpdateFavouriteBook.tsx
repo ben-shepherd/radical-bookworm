@@ -18,7 +18,7 @@ const useUpdateFavouriteBook = (): Return => {
         setUpdating(true);
 
         const response = ErrorThrower(
-            await Api<Response>(`books/v1/books/${id}/favourite`, {
+            await Api<Response>(`/books/${id}/favourite`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

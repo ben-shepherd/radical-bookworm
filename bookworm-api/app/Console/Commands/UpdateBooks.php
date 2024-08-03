@@ -2,7 +2,7 @@
 
 namespace App\Console\Commands;
 
-use App\Domains\Books\Exceptions\UpdateBooksException;
+use App\Domains\Books\Exceptions\BooksApiException;
 use App\Domains\Books\Services\BooksApiService;
 use Illuminate\Console\Command;
 
@@ -24,7 +24,7 @@ class UpdateBooks extends Command
 
     /**
      * Execute the console command.
-     * @throws UpdateBooksException
+     * @throws BooksApiException
      */
     public function handle()
     {

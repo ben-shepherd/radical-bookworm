@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/bookworm-api.iml" filepath="$PROJECT_DIR$/.idea/bookworm-api.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../bookworm-react/.idea/bookworm-react.iml" filepath="$PROJECT_DIR$/../bookworm-react/.idea/bookworm-react.iml" />
     </modules>
   </component>
 </project>

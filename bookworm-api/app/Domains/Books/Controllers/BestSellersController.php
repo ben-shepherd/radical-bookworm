@@ -9,7 +9,6 @@ use App\Domains\Books\DTOs\Services\BooksApiGetOptionsDTO;
 use App\Domains\Books\Requests\BestSellersRequest;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Log;
 
 class BestSellersController extends Controller
 {
@@ -25,8 +24,6 @@ class BestSellersController extends Controller
         $books = cache()->remember($cacheKey, now()->addMinutes(5)->toDate(), function () use ($booksApiService, $options) {
             return $booksApiService->getBooks($options)->toArray();
         });
-
-        Log::info('BestSellers cacheKey: ' . $cacheKey . ' Books: ' . json_encode($books));
 
         return new JsonResponse($books);
     }

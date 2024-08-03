@@ -15,7 +15,7 @@ const useUpdateBook = (): Response => {
         setUpdating(true);
 
         const response = ErrorThrower(
-            await Api<Book>(`books/v1/books/${id}`, {
+            await Api<Book>(`/books/${id}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json'

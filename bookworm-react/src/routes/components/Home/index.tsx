@@ -33,7 +33,7 @@ const Home = () => {
 
     const handleCreateBook = async (book: Book) => {
         const response = ErrorThrower(
-            await Api<Book>('books/v1/books', {
+            await Api<Book>('/books', {
                 method: 'POST',
                 body: JSON.stringify(book)
             })

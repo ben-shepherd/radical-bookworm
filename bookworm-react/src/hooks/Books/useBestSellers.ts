@@ -1,7 +1,7 @@
 import Api from 'api/Api';
 import ErrorThrower from 'api/ErrorThrower';
-import { Dispatch, SetStateAction, useState } from 'react';
-import { Book } from '../../types/books.t';
+import {Dispatch, SetStateAction, useState} from 'react';
+import {Book} from '../../types/books.t';
 
 type SearchProps = {
     search?: string;
@@ -17,13 +17,16 @@ type Response = {
 const useBestSellers = (): Response => {
     const [books, setBooks] = useState<Book[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
-  
-    const fetchBooks = async ({ search = '', pageSize = 10 }: SearchProps = {}) => {
+
+    const fetchBooks = async ({search = '', pageSize = 10}: SearchProps = {}) => {
 
         setLoading(true);
 
         const response = ErrorThrower(
-            await Api<Book[]>('books/v1/best-sellers?' + new URLSearchParams({ search, pageSize: pageSize.toString() }).toString(), {
+            await Api<Book[]>('/best-sellers?' + new URLSearchParams({
+                search,
+                pageSize: pageSize.toString()
+            }).toString(), {
                 method: 'GET',
             })
         )

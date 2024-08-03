@@ -9,7 +9,7 @@ use App\Domains\Books\Contracts\BooksApiServiceContract;
 use App\Domains\Books\DTOs\BookDTO;
 use App\Domains\Books\DTOs\Services\BooksApiGetOptionsDTO;
 use App\Domains\Books\DTOs\UpdateBooksOptionsDTO;
-use App\Domains\Books\Exceptions\UpdateBooksException;
+use App\Domains\Books\Exceptions\BooksApiException;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Support\Collection;
 
@@ -17,7 +17,7 @@ class BooksApiService implements BooksApiServiceContract
 {
     /**
      * @return Collection<BookDTO>
-     * @throws UpdateBooksException|BindingResolutionException
+     * @throws BooksApiException|BindingResolutionException
      */
     public function getBooks(BooksApiGetOptionsDTO $options): Collection
     {
@@ -37,7 +37,7 @@ class BooksApiService implements BooksApiServiceContract
     /**
      * Iterates through all available apis and updates the books collection.
      *
-     * @throws UpdateBooksException
+     * @throws BooksApiException
      * @throws BindingResolutionException
      */
     public function updateBooks(): void
@@ -54,7 +54,7 @@ class BooksApiService implements BooksApiServiceContract
      * @param callable $callback
      * @return void
      * @throws BindingResolutionException
-     * @throws UpdateBooksException
+     * @throws BooksApiException
      */
     private function iterateThroughAPIs(callable $callback): void
     {
@@ -63,13 +63,13 @@ class BooksApiService implements BooksApiServiceContract
         foreach ($apiClassStrings as $apiClassString) {
 
             if (!class_exists($apiClassString)) {
-                throw new UpdateBooksException('API class does not exist');
+                throw new BooksApiException('API class does not exist');
             }
 
             $apiClass = app()->make($apiClassString);
 
             if ($apiClass instanceof ApiContract === false) {
-                throw new UpdateBooksException('API class \'' . $apiClassString . '\' does not implement ApiContract');
+                throw new BooksApiException('API class \'' . $apiClassString . '\' does not implement ApiContract');
             }
 
             $callback($apiClass);

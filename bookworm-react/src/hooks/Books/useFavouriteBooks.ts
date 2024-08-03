@@ -1,7 +1,7 @@
 import Api from 'api/Api';
 import ErrorThrower from 'api/ErrorThrower';
-import { Dispatch, SetStateAction, useEffect, useState } from 'react';
-import { Book } from '../../types/books.t';
+import {Dispatch, SetStateAction, useEffect, useState} from 'react';
+import {Book} from '../../types/books.t';
 
 
 type Response = {
@@ -20,7 +20,7 @@ const useFavouriteBooks = (): Response => {
         setLoading(true)
 
         const response = ErrorThrower(
-            await Api<Book[]>('books/v1/books-favourites', {
+            await Api<Book[]>('/books-favourites', {
                 method: 'GET',
             })
         )

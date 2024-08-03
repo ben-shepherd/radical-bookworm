@@ -53,7 +53,7 @@ class BookServiceProvider extends ServiceProvider
 
     private function mapBooksRoutes(): void
     {
-        Route::prefix('books/v1')
+        Route::prefix('api')
             ->namespace('')
             ->middleware(['books-middleware', 'cors'])
             ->group(base_path('app/Domains/Books/Routes/Routes.php'));

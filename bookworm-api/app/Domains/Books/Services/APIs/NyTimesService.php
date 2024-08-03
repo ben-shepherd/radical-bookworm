@@ -120,6 +120,14 @@ readonly class NyTimesService implements ApiContract
      */
     public function requestNames(): array
     {
+        $handleResponse = function ($response) {
+            return array_map(function ($resultItem) {
+                return new BookNameDTO(
+                    $resultItem['list_name']
+                );
+            }, $response['results'] ?? []);
+        };
+
         try {
             $url = 'lists/names.json';
 
@@ -131,15 +139,11 @@ readonly class NyTimesService implements ApiContract
                 true
             );
 
-            return array_map(function ($resultItem) {
-                return new BookNameDTO(
-                    $resultItem['list_name']
-                );
-            }, $response['body']['results'] ?? []);
+            return $handleResponse($response);
 
         } catch (RequestException $e) {
             if ($e->getResponse()->getStatusCode() === 429) {
-                return (new FakeNamesResponse())->toArray();
+                return $handleResponse((new FakeNamesResponse())->toArray());
             }
         }
     }
@@ -167,9 +171,6 @@ readonly class NyTimesService implements ApiContract
                 continue;
             }
 
-            if ($category && $nameDTO->listForUrl !== $category) {
-                continue;
-            }
             $response = $this->requestList(
                 new NyTimesRequestListOptions($nameDTO->listForUrl)
             );

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="0595154d-123c-4c4a-b396-32362a909823" name="localhost" url="http://localhost:8000">
+        <fileTransfer mountedRoot="C:\Users\bensh\Documents\Projects\Radical\bookworm-api" accessType="MOUNT" port="0" />
+      </webServer>
+    </option>
+  </component>
+</project>
