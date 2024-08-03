@@ -31,7 +31,9 @@ class BooksApiService implements BooksApiServiceContract
             $results = $results->merge($books);
         });
 
-        return $results;
+        return $results
+            ->unique('externalId')
+            ->sortBy('title')->values();
     }
 
     /**

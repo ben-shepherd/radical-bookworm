@@ -17,9 +17,13 @@ class BestSellersController extends Controller
         $validated = $request->validated();
         $search = $validated['search'] ?? '';
         $pageSize = isset($validated['pageSize']) ? (int)$validated['pageSize'] : null;
-        $cacheKey = 'best_sellers' . $search . $pageSize;
+        $cacheKey = 'best_sellers';
 
         $options = new BooksApiGetOptionsDTO($search, $pageSize);
+
+        if (request()->input('cache') === 'false') {
+            cache()->forget($cacheKey);
+        }
 
         $books = cache()->remember($cacheKey, now()->addMinutes(5)->toDate(), function () use ($booksApiService, $options) {
             return $booksApiService->getBooks($options)->toArray();

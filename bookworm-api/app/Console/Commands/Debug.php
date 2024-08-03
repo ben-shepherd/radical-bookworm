@@ -3,6 +3,8 @@
 namespace App\Console\Commands;
 
 
+use App\Domains\Books\DTOs\Services\BooksApiGetOptionsDTO;
+use App\Domains\Books\Services\APIs\ExternalBookService;
 use App\Domains\Books\Services\APIs\NyTimesService;
 use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Console\Command;
@@ -30,10 +32,10 @@ class Debug extends Command
     public function handle()
     {
         /** @var NyTimesService $api */
-        $api = app()->make(NyTimesService::class);
+        $api = app()->make(ExternalBookService::class);
 
         dd(
-            $api->getBooks()
+            $api->getBooks(new BooksApiGetOptionsDTO())
         );
     }
 }

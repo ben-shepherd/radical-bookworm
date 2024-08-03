@@ -135,11 +135,10 @@ readonly class NyTimesService implements ApiContract
                 $this->client->request('GET', $url, $this->guzzleOptionsWithApiKey())
                     ->getBody()
                     ->getContents()
-                ,
-                true
+                , true
             );
 
-            return $handleResponse($response);
+            return $handleResponse($response['body'] ?? []);
 
         } catch (RequestException $e) {
             if ($e->getResponse()->getStatusCode() === 429) {
