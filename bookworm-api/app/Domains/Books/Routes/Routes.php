@@ -8,12 +8,15 @@ use App\Domains\Books\DTOs\Services\BooksApiGetOptionsDTO;
 use App\Domains\Books\Services\BooksApiService;
 use Illuminate\Support\Facades\Route;
 
+Route::resource('/books', BooksController::class);
 
 Route::get('/best-sellers', BestSellersController::class);
-Route::resource('/books', BooksController::class);
+
 Route::post('/books/{book}/favourite', BooksUpdateFavouriteController::class);
+
 Route::get('/books-favourites', BooksGetFavourites::class);
 
+// used for testing
 Route::get('update-books', function () {
     /** @var BooksApiService $booksService */
     $booksService = app()->make(BooksApiService::class);
