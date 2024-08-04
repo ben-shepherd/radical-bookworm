@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use App\Domains\Books\Models\BookFavourite;
+use Filament\Models\Contracts\FilamentUser;
+use Filament\Panel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Notifications\Notifiable;
 use MongoDB\Laravel\Auth\User as Authenticatable;
@@ -14,7 +16,7 @@ use MongoDB\Laravel\Relations\HasMany;
  * @property string $email
  * @property ?string $password
  */
-class User extends Authenticatable
+class User extends Authenticatable implements FilamentUser
 {
     use HasFactory, Notifiable;
 
@@ -57,5 +59,10 @@ class User extends Authenticatable
     public function favouriteBooks(): HasMany
     {
         return $this->hasMany(BookFavourite::class, 'userId', '_id');
+    }
+
+    public function canAccessPanel(Panel $panel): bool
+    {
+        return true;
     }
 }

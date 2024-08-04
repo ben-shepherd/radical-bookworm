@@ -8,10 +8,12 @@
         "php": "^8.2",
         "ext-mongodb": "*",
         "darkaonline/l5-swagger": "^8.6",
+        "filament/filament": "^3.2",
         "guzzlehttp/guzzle": "^7.9",
         "jenssegers/mongodb": "^4.7",
         "laravel/framework": "^11.9",
         "laravel/tinker": "^2.9",
+        "livewire/livewire": "^3.5",
         "mongodb/laravel-mongodb": "^4.7"
     },
     "require-dev": {
@@ -37,7 +39,8 @@
     "scripts": {
         "post-autoload-dump": [
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
-            "@php artisan package:discover --ansi"
+            "@php artisan package:discover --ansi",
+            "@php artisan filament:upgrade"
         ],
         "post-update-cmd": [
             "@php artisan vendor:publish --tag=laravel-assets --ansi --force"
