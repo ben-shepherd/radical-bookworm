@@ -1,5 +1,6 @@
 import BookOpen from 'components/icons/BookOpen';
 import Heart from 'components/icons/Heart';
+import useCreateBook from 'hooks/Books/useCreateBook';
 import { enqueueSnackbar } from "notistack";
 import { useEffect, useState } from "react";
 import { Book } from 'types/books.t';
@@ -22,13 +23,14 @@ export type ListItemEventProps = {
 
 const ListItem = ({ book, favouriteBooks, className = '', onClick, onRefresh, onEdit, onDelete }: ListItemProps & ListItemEventProps) => {
 
-    const isBookFavourite = () => favouriteBooks.some((favouriteBook) => favouriteBook._id === book._id)
+    const isBookFavourite = () => favouriteBooks.some((favouriteBook) => favouriteBook.id === book.id)
     const [isFavourite, setIsFavourite] = useState<boolean>(isBookFavourite())
 
     useEffect(() => {
         setIsFavourite(isBookFavourite())
     }, [book]);
 
+    const { createBook } = useCreateBook()
     const { updateBook, updating } = useUpdateBook()
     const { updateFavouriteBook } = useUpdateFavouriteBook()
 
@@ -58,7 +60,13 @@ const ListItem = ({ book, favouriteBooks, className = '', onClick, onRefresh, on
 
         setRating(value)
 
-        const response = await updateBook(book._id, {
+        const createResponse = await createBook(book)
+
+        if (!createResponse.ok) {
+            return;
+        }
+
+        const response = await updateBook(createResponse.json.id, {
             rating: value
         })
 
@@ -72,7 +80,7 @@ const ListItem = ({ book, favouriteBooks, className = '', onClick, onRefresh, on
     }
 
     const handleDelete = async () => {
-        if(deletable && confirmDelete) {
+        if (deletable && confirmDelete) {
             onDelete(book)
             return;
         }
@@ -81,12 +89,16 @@ const ListItem = ({ book, favouriteBooks, className = '', onClick, onRefresh, on
     }
 
     const handleClickUpdateFavourite = async () => {
-        if (!book._id) {
+
+        setIsFavourite(!isFavourite)
+
+        const createResponse = await createBook(book);
+
+        if (!createResponse.ok) {
             return;
         }
 
-        setIsFavourite(!isFavourite)
-        const response = await updateFavouriteBook(book._id)
+        const response = await updateFavouriteBook(createResponse.json.id)
 
         if (response.ok) {
             if (typeof onRefresh === 'function') {

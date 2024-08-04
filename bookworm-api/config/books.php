@@ -4,7 +4,7 @@ return [
 
     'apis' => [
         App\Domains\Books\Services\APIs\NyTimesService::class,
-        //App\Domains\Books\Services\APIs\ExternalBookService::class,
+        App\Domains\Books\Services\APIs\ExternalBookService::class,
     ],
 
     'nytimes' => [

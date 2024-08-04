@@ -34,6 +34,28 @@ class Book extends Model
         'rating',
         'price'
     ];
+//
+//    protected $casts = [
+//        'authors' => 'array'
+//    ];
+
+    public function setAuthorsAttribute($authors): void
+    {
+        if (!is_string($authors) && !is_array($authors)) {
+            throw new \Exception('authors must be a string or an array');
+        }
+
+        if(is_string($authors)) {
+            $authors = [$authors];
+        }
+
+        $this->attributes['authors'] = json_encode($authors);
+    }
+
+    public function getAuthorsAttribute(): array
+    {
+        return json_decode($this->attributes['authors'] ?? '[]', true);
+    }
 
     public function setPriceAttribute(float $price): void
     {

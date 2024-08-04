@@ -54,7 +54,8 @@ class BooksUpdateFavouriteController extends Controller
     {
         // Check book exists
         $bookRepository->find($bookId);
-        $userId = Auth::id();
+        $userId = (int)Auth::id();
+        $bookId = (int)$bookId;
         $favourited = false;
 
         try {

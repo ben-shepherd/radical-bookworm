@@ -10,7 +10,6 @@ import Gallery from '../../../components/Gallery';
 import ReturnToLink from "../../../components/ReturnToLink";
 import SearchBar from '../../../components/SearchBar';
 import Content from '../../../components/theme/Content';
-import useFetchBooks from '../../../hooks/Books/useFetchBooks';
 
 const Home = () => {
     const navigate = useNavigate();
@@ -24,9 +23,8 @@ const Home = () => {
         loading: loadingSearchResults,
         refresh: refreshSearch,
         setBooks: setSearchedBooks
-    } = useFetchBooks()
-
-    const {books: booksBestSellers, loading: loadingBooksBestSellers, refresh: refreshBestSellers} = useBestSellers()
+    } = useBestSellers()
+    const { books: booksBestSellers, loading: loadingBooksBestSellers, refresh: refreshBestSellers } = useBestSellers()
     const {
         books: booksFavourites,
         loading: loadingBooksFavourites,
@@ -37,7 +35,7 @@ const Home = () => {
         const response = await createBook(book);
 
         if (response.ok) {
-            navigate(`/edit/${response.json._id}`);
+            navigate(`/edit/${response.json.id}`);
         }
     }
 
@@ -48,10 +46,10 @@ const Home = () => {
     }
 
     const handleSearch = useCallback(async () => {
-        const books = await refreshSearch({search, resultsEmptyWhenSearchEmpty: true})
+        const books = await refreshSearch({ search, resultsEmptyWhenSearchEmpty: true })
 
         if (Array.isArray(books) && books.length === 0) {
-            enqueueSnackbar({message: 'No books found', variant: 'error'})
+            enqueueSnackbar({ message: 'No books found', variant: 'error' })
         }
     }, [search, refreshSearch])
 
@@ -68,7 +66,7 @@ const Home = () => {
     }, [search, loadingSearchResults, handleSearch])();
 
     useEffect(() => {
-        refreshBestSellers({search: '', pageSize: 3});
+        refreshBestSellers({ search: '', pageSize: 3 });
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
@@ -85,13 +83,13 @@ const Home = () => {
                         <div className='my-10'></div>
 
                         <h1 className='heading-1 mb-10'>New York Best Sellers</h1>
-                        <Gallery data={booksBestSellers} loading={loadingBooksBestSellers} onClick={handleClick}/>
+                        <Gallery data={booksBestSellers} loading={loadingBooksBestSellers} onClick={handleClick} />
 
                         <div className='my-10'></div>
 
                         <h1 className='heading-1 mb-10'>Favourites</h1>
                         {loadingBooksFavourites || booksFavourites.length ? (
-                            <Gallery data={booksFavourites} loading={loadingBooksFavourites} onClick={handleClick}/>
+                            <Gallery data={booksFavourites} loading={loadingBooksFavourites} onClick={handleClick} />
                         ) : (
                             <p className='no-results mt-5'>You have not added any books to your favourites.</p>
                         )}
@@ -110,7 +108,7 @@ const Home = () => {
 
                         <div className="mb-10"></div>
 
-                        <ReturnToLink url={'/'} text={'Home'} onClick={handleClearSearch}/>
+                        <ReturnToLink url={'/'} text={'Home'} onClick={handleClearSearch} />
                     </div>
                 )}
             />

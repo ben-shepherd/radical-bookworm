@@ -1,22 +1,24 @@
 import ReturnToLink from 'components/ReturnToLink';
 import StarRating from 'components/StarRating';
 import StylizedTextField from 'components/StylisedTextfield';
-import UpdateButton from "../../../components/UpdateButton";
-import {useParams} from 'react-router-dom';
+import { enqueueSnackbar } from "notistack";
+import { memo, useEffect, useRef, useState } from "react";
+import { useNavigate, useParams } from 'react-router-dom';
 import Content from '../../../components/theme/Content';
-import './styles.scss';
+import UpdateButton from "../../../components/UpdateButton";
 import useBookById from "../../../hooks/Books/useBookById";
-import {useEffect, useRef, useState} from "react";
-import {Book} from "../../../types/books.t";
-import {enqueueSnackbar} from "notistack";
 import useUpdateBook from "../../../hooks/Books/useUpdateBook";
+import { Book } from "../../../types/books.t";
+import './styles.scss';
 
 const Edit = () => {
 
-    const {id = null} = useParams();
+    const navigate = useNavigate();
 
-    const {book, setBook, refresh, loading} = useBookById();
-    const {updateBook, updating} = useUpdateBook()
+    const { id = null } = useParams();
+
+    const { book, setBook, refresh, loading } = useBookById({ autoload: false });
+    const { updateBook, updating } = useUpdateBook()
 
     // Used for waiting for input changes
     const timeoutHandle = useRef<ReturnType<typeof setTimeout> | null>(null)
@@ -34,15 +36,20 @@ const Edit = () => {
      * Page loaded, update requested book by its ID.
      */
     useEffect(() => {
-        if (id) {
-            refresh({id}).then((fetchedBook) => {
+
+        if (id && !loading && !book) {
+            if (id === '0') {
+                navigate('/');
+                return;
+            }
+
+            refresh({ id }).then((fetchedBook) => {
 
                 // Newly loaded book should show the pretty price
                 setShowPrettyPrice(true)
                 setPrettyPrice(getPrettyPrice(fetchedBook?.price ?? 0))
             });
         }
-
         return () => {
             if (timeoutHandle.current) {
                 clearTimeout(timeoutHandle.current);
@@ -50,7 +57,7 @@ const Edit = () => {
         }
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    }, [id]);
 
     /**
      * Apply changes to the book
@@ -58,7 +65,7 @@ const Edit = () => {
     const handleChange = (key: string, value: unknown, instantUpdate: boolean = false) => {
         const waitMS = instantUpdate ? 0 : 1500
 
-        setBook({...book, [key]: value} as Book);
+        setBook({ ...book, [key]: value } as Book);
 
         if (timeoutHandle.current) {
             clearTimeout(timeoutHandle.current);
@@ -66,22 +73,22 @@ const Edit = () => {
 
         timeoutHandle.current = setTimeout(async () => {
 
-            if (!book?._id) return;
+            if (!book?.id) return;
 
-            const response = await updateBook(book._id, {[key]: value});
+            const response = await updateBook(book.id, { [key]: value });
 
             if (response.ok) {
                 setShowPrettyPrice(true)
                 setPrettyPrice(getPrettyPrice(response.json.price))
-                enqueueSnackbar({message: `The ${key} has been updated!`, variant: 'success'});
+                enqueueSnackbar({ message: `The ${key} has been updated!`, variant: 'success' });
             }
         }, waitMS)
     }
 
     const handleUpdate = async () => {
-        if (!book?._id) return;
+        if (!book?.id) return;
 
-        const response = await updateBook(book._id, {
+        const response = await updateBook(book.id, {
             rating: book?.rating ?? 0,
             price: parseFloat(removeNonDigit((book?.price ?? '0').toString()))
         });
@@ -89,7 +96,7 @@ const Edit = () => {
         if (response.ok) {
             setShowPrettyPrice(true)
             setPrettyPrice(getPrettyPrice(response.json.price))
-            enqueueSnackbar({message: `Successfully updated!`, variant: 'success'});
+            enqueueSnackbar({ message: `Successfully updated!`, variant: 'success' });
         }
     }
 
@@ -108,7 +115,7 @@ const Edit = () => {
                     </div>
                 </div>
                 <div className="image-darker"></div>
-                <div className='image' style={{backgroundImage: `url(${book?.image})`}}></div>
+                <div className='image' style={{ backgroundImage: `url(${book?.image})` }}></div>
             </div>
 
             <div className="my-10"></div>
@@ -133,17 +140,17 @@ const Edit = () => {
                 label='Rating'
                 EditComponent={(
                     <StarRating rating={book?.rating ?? 0}
-                                onClick={(value: number) => handleChange('rating', value, true)}/>
+                        onClick={(value: number) => handleChange('rating', value, true)} />
                 )}
             />
 
             <UpdateButton onClick={handleUpdate} disabled={updating || loading} className={'my-10'}
-                          text={updating ? 'Updating...' : 'Update'}/>
+                text={updating ? 'Updating...' : 'Update'} />
 
-            <ReturnToLink url='/favourites' text='Favourites'/>
+            <ReturnToLink url='/favourites' text='Favourites' />
 
         </Content>
     )
 }
 
-export default Edit
+export default memo(Edit)
