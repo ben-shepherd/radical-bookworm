@@ -9,7 +9,7 @@ use Illuminate\Foundation\Http\FormRequest;
 
 /**
  * @OA\Schema(
- *     title="BestSellersRequest",
+ *     title="BestSellersSearchRequest",
  *     description="Request to get best selling books",
  *     type="object",
  *     required={"search", "pageSize"},
@@ -17,7 +17,7 @@ use Illuminate\Foundation\Http\FormRequest;
  *     @OA\Property(property="pageSize", type="integer", example=20)
  * )
  */
-class BestSellersRequest extends FormRequest
+class BestSellersSearchRequest extends FormRequest
 {
     public function rules(): array
     {

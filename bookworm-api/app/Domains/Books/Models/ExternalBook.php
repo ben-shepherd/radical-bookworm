@@ -8,5 +8,5 @@ use App\Base\Model;
 
 class ExternalBook extends Model
 {
-    protected $connection = 'mongodbExternal';
+
 }

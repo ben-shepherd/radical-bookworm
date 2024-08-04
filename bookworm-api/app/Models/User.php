@@ -7,8 +7,8 @@ use Filament\Models\Contracts\FilamentUser;
 use Filament\Panel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Notifications\Notifiable;
-use MongoDB\Laravel\Auth\User as Authenticatable;
-use MongoDB\Laravel\Relations\HasMany;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * @property string $_id
@@ -19,8 +19,6 @@ use MongoDB\Laravel\Relations\HasMany;
 class User extends Authenticatable implements FilamentUser
 {
     use HasFactory, Notifiable;
-
-    protected $connection = 'mongodb';
 
     /**
      * The attributes that are mass assignable.
@@ -58,7 +56,7 @@ class User extends Authenticatable implements FilamentUser
 
     public function favouriteBooks(): HasMany
     {
-        return $this->hasMany(BookFavourite::class, 'userId', '_id');
+        return $this->hasMany(BookFavourite::class, 'userId', 'id');
     }
 
     public function canAccessPanel(Panel $panel): bool

@@ -8,18 +8,20 @@ use App\Domains\Books\Contracts\ApiContract;
 use App\Domains\Books\Contracts\BooksApiServiceContract;
 use App\Domains\Books\DTOs\BookDTO;
 use App\Domains\Books\DTOs\Services\BooksApiGetOptionsDTO;
+use App\Domains\Books\DTOs\Services\GetCachedBestSellerOptions;
 use App\Domains\Books\Exceptions\BooksApiException;
 use App\Domains\Books\Factory\BookFactory;
 use App\Domains\Books\Repository\BookRepository;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Log;
 
-class BooksApiService implements BooksApiServiceContract
+readonly class BooksApiService implements BooksApiServiceContract
 {
     public function __construct(
-        private readonly BookRepository $bookRepository,
-        private readonly BookFactory    $bookFactory
+        private BookRepository $bookRepository,
+        private BookFactory    $bookFactory
     )
     {
     }
@@ -30,19 +32,43 @@ class BooksApiService implements BooksApiServiceContract
      */
     public function getBookDTOs(BooksApiGetOptionsDTO $options): Collection
     {
+        Log::info(__CLASS__.__FUNCTION__.'('.json_encode($options).")");
         $results = collect();
 
         $this->iterateThroughAPIs(function ($api) use (&$results, $options) {
+
+            Log::info('API: '.gettype($api));
+
             /**
              * @var ApiContract $api
              */
             $books = $api->getBookDTOs($options);
+
+            Log::info('Results: '.count($books));
+
             $results = $results->merge($books);
         });
 
         return $results
             ->unique('externalId')
             ->sortBy('title')->values();
+    }
+
+    /**
+     * @param GetCachedBestSellerOptions $options
+     * @return Collection<BookDTO>
+     * @throws BindingResolutionException
+     * @throws BooksApiException
+     */
+    public function getCachedBestSellers(GetCachedBestSellerOptions $options): Collection
+    {
+        if(!$options->cached) {
+            cache()->forget($options->cacheKey);
+        }
+
+        return cache()->remember($options->cacheKey, $options->cacheMinutes * 60, function() {
+            return $this->getBookDTOs(new BooksApiGetOptionsDTO());
+        });
     }
 
     /**

@@ -1,7 +1,8 @@
 import Api from 'api/Api';
 import ErrorThrower from 'api/ErrorThrower';
-import {Dispatch, SetStateAction, useEffect, useState} from 'react';
-import {Book} from '../../types/books.t';
+import { enqueueSnackbar } from 'notistack';
+import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react';
+import { Book } from '../../types/books.t';
 
 type Props = {
     id?: string | null;
@@ -17,13 +18,14 @@ type Response = {
     loading: boolean;
 }
 
-const useBookById = ({id = null, autoload = false}: Props = {}): Response => {
+const useBookById = ({ id = null, autoload = false }: Props = {}): Response => {
+    const snackbarTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
     const [book, setBook] = useState<Book | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
 
-    const fetchBook = async ({id = null}: SearchProps): Promise<Book | null> => {
+    const fetchBook = async ({ id = null }: SearchProps): Promise<Book | null> => {
 
-        if (!id) {
+        if (!id || loading) {
             setBook(null)
             return null
         }
@@ -33,10 +35,28 @@ const useBookById = ({id = null, autoload = false}: Props = {}): Response => {
         const response = ErrorThrower(
             await Api<Book>(`/books/${id}`, {
                 method: 'GET',
-            })
+            }),
+            {
+                showError: false
+            }
         )
 
         setLoading(false);
+
+        if (!response.ok) {
+            if (snackbarTimer.current) clearTimeout(snackbarTimer.current);
+
+            snackbarTimer.current = setTimeout(() => {
+                let message = response.json.message
+
+                if (response.code === 404) {
+                    message = 'Book not found!';
+                }
+
+                enqueueSnackbar({ message, variant: 'error' })
+            }, 1500)
+            return null;
+        }
 
         if (response.ok) {
             setBook(response.json)
@@ -47,8 +67,11 @@ const useBookById = ({id = null, autoload = false}: Props = {}): Response => {
     }
 
     useEffect(() => {
-        if (autoload) {
-            fetchBook({id})
+        if (autoload && book === null) {
+            fetchBook({ id })
+        }
+        return () => {
+            if (snackbarTimer.current) clearTimeout(snackbarTimer.current);
         }
     }, [autoload])
 

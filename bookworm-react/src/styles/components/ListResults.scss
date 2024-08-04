@@ -3,103 +3,109 @@
 .ListResults {
 
     .ListItem {
-        height:55px;
+        height: 55px;
         background-color: v.$listResultsBackgroundColor;
-        display:flex;
+        display: flex;
         justify-content: center;
         align-items: center;
 
         .summary {
-            display:flex;
+            display: flex;
             flex: 1 1 auto;
 
             .title {
                 color: v.$listResultsTextPrimaryColor;
-                font-weight:700;
-                margin:0 5px;
-                
+                font-weight: 700;
+                margin: 0 5px;
+
                 button {
                     text-transform: uppercase;
                 }
             }
+
             .author {
                 color: v.$listResultsTextSecondaryColor;
             }
         }
-        
+
         .bookIcon {
             svg {
-                margin:0 auto;
+                margin: 0 auto;
                 color: v.$listResultsIconColor;
             }
         }
 
         .price {
-            font-weight:700;
+            font-weight: 700;
             text-transform: uppercase;
-            margin:0 1em;
+            margin: 0 1em;
         }
 
         .action {
-            margin:0 20px;
-            color:#5b5b5b;
-            font-weight:600;
-            font-size:1.1em;
+            margin: 0 20px;
+            color: #5b5b5b;
+            font-weight: 600;
+            font-size: 1.1em;
 
-            transition:all 0.5s ease-in-out;
+            transition: all 0.5s ease-in-out;
 
             &:hover {
-                transform:scale(1.1);
-                transition:all 0.5s ease-in-out;
+                transform: scale(1.1);
+                transition: all 0.5s ease-in-out;
             }
+
             .cancel {
-                margin-left:20px;
+                margin-left: 20px;
             }
         }
 
         .favouriteIcon {
-            margin-right:1em;
+            margin-right: 1em;
             display: flex;
             justify-content: center;
 
             svg {
                 transition: all 0.5s ease;
-                
+
             }
 
             &:hover svg {
                 transition: all 0.5s ease;
                 transform: scale(1.1);
-                cursor:pointer;
-                color:#c86b6b;
+                cursor: pointer;
+                color: #c86b6b;
             }
+
             &.active svg {
-                color:#762e2e;
+                color: #762e2e;
             }
         }
 
         &.ListItemLoading {
-            background-color:#9b9b9b;
+            background-color: #9b9b9b;
         }
     }
-    
+
 }
 
 
 /* Styles for devices below sm */
-@media (max-width: 640px) {
+@media (max-width: 1024px) {
     .ListResults {
 
         .ListItem {
-            padding:10px 0;
-            height:auto;
+            padding: 10px 0;
+            height: auto;
             flex-direction: column;
         }
-        .ListItem .summary, .StarRating {
-            margin:5px 0;
+
+        .ListItem .summary,
+        .StarRating {
+            margin: 5px 0;
         }
+
         .summary {
-            display:flex;
+            display: flex;
             flex-direction: column;
             text-align: center;
         }
