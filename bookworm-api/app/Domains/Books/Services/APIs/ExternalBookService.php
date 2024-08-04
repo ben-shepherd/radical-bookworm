@@ -24,8 +24,8 @@ readonly class ExternalBookService implements ApiContract
                 ExternalBook::query()
                     ->when($options->search, function ($query, $search) {
                         $query->where(function ($query) use ($search) {
-                            $query->where('title', 'like', "%{$search}%")
-                                ->orWhere('description', 'like', "%{$search}%");
+                            $query->whereRaw('LOWER(title) LIKE ?', ['%'.$search.'%'])
+                                ->orWhereRaw('LOWER(description) LIKE ?', ['%'.$search.'%']);
                         });
                     })
                     ->when($options->pageSize, function ($query, $pageSize) {

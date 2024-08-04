@@ -15,7 +15,7 @@ const ListResults = ({ results, ...listItemProps }: Props & ListItemEventProps) 
     return (
         <div className="ListResults">
             {results.map((book: Book) => (
-                <ListItem className='mb-5' key={book._id} book={book}
+                <ListItem className='mb-5' key={book.id} book={book}
                     favouriteBooks={favouriteBooks}
                     {...listItemProps} />
             ))}

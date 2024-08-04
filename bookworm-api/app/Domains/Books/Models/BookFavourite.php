@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Domains\Books\Models;
 
 use App\Base\Model;
-use MongoDB\Laravel\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * @property string $bookId
@@ -13,8 +13,10 @@ use MongoDB\Laravel\Relations\BelongsTo;
  */
 class BookFavourite extends Model
 {
+    protected $table = 'books_favourites';
+
     public function book(): BelongsTo
     {
-        return $this->belongsTo(Book::class, 'bookId', '_id');
+        return $this->belongsTo(Book::class, 'bookId', 'id');
     }
 }

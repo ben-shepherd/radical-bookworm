@@ -14,7 +14,7 @@ class BookFavouriteFactory extends Factory
         parent::__construct($modelClass);
     }
 
-    public function createFromUserAndBook(string $userId, string $bookId): BookFavourite
+    public function createFromUserAndBook(int $userId, int $bookId): BookFavourite
     {
         /** @var BookFavourite $bookFavourite */
         $bookFavourite = $this->create();

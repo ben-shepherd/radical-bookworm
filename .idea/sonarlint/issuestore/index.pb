@@ -1,0 +1,21 @@
+
+B
+docker-compose.yml,3/5/35b8c13cf2eb2a194eada000eb310d65aed53b2a
+G
+bookworm-api/Dockerfile,7/6/766f1baf8e9e1e049c25db902adc99a2a62aab79
+J
+bookworm-api/composer.lock,1/7/17f4ad5d8ad1336af13513c3027744d4b36df137
+J
+bookworm-api/composer.json,8/e/8eb875d2878b862fece1a5ff2c1c0d40eb4fead7
+I
+bookworm-api/.env.example,e/8/e8d5dd4eb9d267797145bcd4e1518a2818f425be
+[
++bookworm-api/app/Console/Commands/Debug.php,f/6/f6c0b364fed8fc3c8a23f55e28614cf891ccf188
+^
+.bookworm-api/app/Domains/Books/Models/Book.php,0/1/010b7e741123b87e470d304aa3060680bb891282
+O
+bookworm-api/app/Base/Model.php,f/c/fcb74b2373b81e01127a6a2bae70066c44a64a93
+P
+ bookworm-api/app/Models/User.php,8/2/82078bff46b023392fcb49f5e4ec25c61db8da47
+y
+Ibookworm-api/database/migrations/2024_08_04_152003_create_books_table.php,1/6/16f526789b1e642d6a0133c8fb24ffde2d41ca51

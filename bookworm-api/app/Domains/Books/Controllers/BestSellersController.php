@@ -51,7 +51,7 @@ class BestSellersController extends Controller
         $validated = $request->validated();
         $search = $validated['search'] ?? '';
         $pageSize = isset($validated['pageSize']) ? (int)$validated['pageSize'] : null;
-        $cacheKey = 'best_sellers';
+        $cacheKey = 'best_sellers'.$search;
 
         $options = new BooksApiGetOptionsDTO($search, $pageSize);
 

@@ -14,7 +14,7 @@ class BookFavouriteRepository extends Repository
         parent::__construct(BookFavourite::class);
     }
 
-    public function findByUserAndBook(string $userId, string $bookId): ?BookFavourite
+    public function findByUserAndBook(int $userId, int $bookId): ?BookFavourite
     {
         /** @var BookFavourite */
         return $this->createQueryBuilder()

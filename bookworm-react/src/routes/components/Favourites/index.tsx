@@ -17,7 +17,7 @@ const Favourites = () => {
 
     const { createBook } = useCreateBook()
 
-    const {books: booksFavourites, loading, refresh} = useFavouriteBooks();
+    const { books: booksFavourites, loading, refresh } = useFavouriteBooks();
 
     const filteredBooks = useMemo(() => {
         return search.length
@@ -28,22 +28,22 @@ const Favourites = () => {
     const handleClick = async (book: Book) => {
         const response = await createBook(book);
 
-        if(response.ok) {
-            navigate(`/edit/${response.json._id}`);
+        if (response.ok) {
+            navigate(`/edit/${response.json.id}`);
         }
     };
 
     const handleDelete = async (book: Book) => {
-        if(!book._id) return;
+        if (!book.id) return;
 
         const response = ErrorThrower(
-            await Api<{success: true}>(`books/${book._id}`, {
+            await Api<{ success: true }>(`books/${book.id}`, {
                 method: 'DELETE'
             })
         )
 
-        if(response.ok) {
-            enqueueSnackbar({message: 'Book has been deleted!', variant: 'success'})
+        if (response.ok) {
+            enqueueSnackbar({ message: 'Book has been deleted!', variant: 'success' })
             refresh()
         }
     }
@@ -74,7 +74,7 @@ const Favourites = () => {
                         <div className='my-10'></div>
 
                         {loading && (
-                            <ListResultsLoading maxItems={2}/>
+                            <ListResultsLoading maxItems={2} />
                         )}
                         {!loading && booksFavourites.length === 0 && (
                             <p className='no-results mt-5'>You have not added any books to your favourites.</p>

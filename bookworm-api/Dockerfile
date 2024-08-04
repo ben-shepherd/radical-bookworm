@@ -16,13 +16,14 @@ RUN apt-get update && apt-get install -y \
     supervisor \
     libssl-dev \
     pkg-config \
-    libcurl4-openssl-dev
+    libcurl4-openssl-dev \
+    libpq-dev
 
 # Install PHP extensions
 RUN docker-php-ext-install pdo pdo_mysql mbstring exif pcntl bcmath gd
 
-# Install the MongoDB extension
-RUN pecl install mongodb && docker-php-ext-enable mongodb
+# Install PostgreSQL extension
+RUN docker-php-ext-install pdo_pgsql
 
 # Install XDebug
 RUN pecl install xdebug && docker-php-ext-enable xdebug

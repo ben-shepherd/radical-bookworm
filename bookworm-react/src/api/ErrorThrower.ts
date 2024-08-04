@@ -1,8 +1,12 @@
-import { enqueueSnackbar } from "notistack"
-import { ApiResponse } from "./Api"
+import { enqueueSnackbar } from "notistack";
+import { ApiResponse } from "./Api";
 
-const ErrorThrower = <Response>(response: ApiResponse<Response>): ApiResponse<Response> => {
-    if (!response.ok) {
+export type ErrorThrowerOptions = {
+    showError?: boolean;
+}
+
+const ErrorThrower = <Response>(response: ApiResponse<Response>, { showError = true }: ErrorThrowerOptions = {}): ApiResponse<Response> => {
+    if (!response.ok && showError) {
         console.error(response)
         enqueueSnackbar({ message: response.json.message, variant: 'error' })
     }
