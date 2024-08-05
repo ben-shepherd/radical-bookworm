@@ -1,8 +1,10 @@
 import BookOpen from 'components/icons/BookOpen';
 import Heart from 'components/icons/Heart';
 import useCreateBook from 'hooks/Books/useCreateBook';
+import { useAppDispatch } from 'hooks/redux';
 import { enqueueSnackbar } from "notistack";
 import { useEffect, useState } from "react";
+import { setFavourites } from 'reducers/booksReducer';
 import { Book } from 'types/books.t';
 import useUpdateBook from "../../hooks/Books/useUpdateBook";
 import useUpdateFavouriteBook from "../../hooks/Books/useUpdateFavouriteBook";
@@ -23,12 +25,13 @@ export type ListItemEventProps = {
 
 const ListItem = ({ book, favouriteBooks, className = '', onClick, onRefresh, onEdit, onDelete }: ListItemProps & ListItemEventProps) => {
 
-    const isBookFavourite = () => favouriteBooks.some((favouriteBook) => favouriteBook.id === book.id)
-    const [isFavourite, setIsFavourite] = useState<boolean>(isBookFavourite())
+    const dispatch = useAppDispatch();
 
-    useEffect(() => {
-        setIsFavourite(isBookFavourite())
-    }, [book]);
+    const isFavourite = favouriteBooks.some((favouriteBook) => {
+        const idMatch = favouriteBook.id === book.id
+        const idExternalMatch = favouriteBook.externalId && favouriteBook.externalId === book.externalId
+        return idMatch || idExternalMatch
+    })
 
     const { createBook } = useCreateBook()
     const { updateBook, updating } = useUpdateBook()
@@ -90,8 +93,6 @@ const ListItem = ({ book, favouriteBooks, className = '', onClick, onRefresh, on
 
     const handleClickUpdateFavourite = async () => {
 
-        setIsFavourite(!isFavourite)
-
         const createResponse = await createBook(book);
 
         if (!createResponse.ok) {
@@ -108,7 +109,17 @@ const ListItem = ({ book, favouriteBooks, className = '', onClick, onRefresh, on
             const message = response.json.type ? 'Book has been favourited!' : 'Book has been removed from favourites!'
             const variant = response.json.type ? 'success' : 'warning'
             enqueueSnackbar({ message, variant })
-            setIsFavourite(response.json.type)
+
+            let newFavourites = [...favouriteBooks]
+
+            if (response.json.type) {
+                newFavourites.push(createResponse.json)
+            }
+            else {
+                newFavourites = newFavourites.filter((favouriteBook) => favouriteBook.id !== createResponse.json.id)
+            }
+
+            dispatch(setFavourites(newFavourites))
         }
     }
 

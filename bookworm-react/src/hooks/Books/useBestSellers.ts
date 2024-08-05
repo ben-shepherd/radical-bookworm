@@ -1,44 +1,35 @@
-import Api from 'api/Api';
+import Api, { ApiResponse } from 'api/Api';
 import ErrorThrower from 'api/ErrorThrower';
-import { Dispatch, SetStateAction, useState } from 'react';
+import { useAppDispatch, useAppSelector } from 'hooks/redux';
+import { useState } from 'react';
+import { selectBestSellers, setBestSellers } from 'reducers/booksReducer';
 import { Book } from '../../types/books.t';
 
-type SearchProps = {
-    search?: string;
-    pageSize?: number;
-    resultsEmptyWhenSearchEmpty?: boolean;
-}
 type Response = {
     books: Book[]
-    setBooks: Dispatch<SetStateAction<Book[]>>;
-    refresh: (props?: SearchProps) => Promise<void>;
+    setBooks: (books: Book[]) => void;
+    refresh: () => Promise<ApiResponse<Book[]>>;
     loading: boolean;
 }
 
+
+
 const useBestSellers = (): Response => {
-    const [books, setBooks] = useState<Book[]>([]);
+    const books = useAppSelector(state => selectBestSellers(state.books))
+    const dispatch = useAppDispatch()
+
     const [loading, setLoading] = useState<boolean>(false);
 
-    const fetchBooks = async ({ search = '', pageSize = 10, resultsEmptyWhenSearchEmpty = false }: SearchProps = {}) => {
+    const setBooks = (books: Book[]) => {
+        dispatch(setBestSellers(books))
+    }
 
-        if ((search ?? '').length === 0 && resultsEmptyWhenSearchEmpty) {
-            setBooks([])
-            return;
-        }
+    const fetchBooks = async () => {
 
         setLoading(true);
 
-        let url = 'best-sellers';
-
-        if (search.length) {
-            url = 'best-sellers-search?' + new URLSearchParams({
-                search,
-                pageSize: pageSize.toString()
-            }).toString()
-        }
-
         const response = ErrorThrower(
-            await Api<Book[]>(url, {
+            await Api<Book[]>('best-sellers', {
                 method: 'GET',
             })
         )
@@ -48,6 +39,7 @@ const useBestSellers = (): Response => {
         }
 
         setLoading(false);
+        return response
     }
 
     return {

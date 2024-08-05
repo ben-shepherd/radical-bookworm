@@ -3,10 +3,10 @@ import { Book } from "../types/books.t";
 const fakerBooks = (amount: number = 12, offset: number = 0): Book[] => {
     let books = [];
 
-    const generateRandomString = () => Math.random().toString(36).substring(2, 15);
+    const generateRandomIdInt = () => Math.floor(Math.random() * 1000);
 
     books.push({
-        id: generateRandomString(),
+        id: generateRandomIdInt(),
         title: `Billy Summers`,
         authors: ['Stephen King'],
         description: `This is the description for book ${1}.`,
@@ -16,7 +16,7 @@ const fakerBooks = (amount: number = 12, offset: number = 0): Book[] => {
 
     for (let i = 1; i < amount; i++) {
         books.push({
-            id: generateRandomString(),
+            id: generateRandomIdInt(),
             title: `Book Title ${offset + i + 1}`,
             authors: [`Author ${offset + i + 1}`, `Author ${offset + i + 2}`],
             description: `This is the description for book ${offset + i + 1}.`,

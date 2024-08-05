@@ -1,17 +1,17 @@
-import {Book} from "../../types/books.t";
-import {useState} from "react";
+import { useState } from "react";
+import Api, { ApiResponse } from "../../api/Api";
 import ErrorThrower from "../../api/ErrorThrower";
-import Api, {ApiResponse} from "../../api/Api";
+import { Book } from "../../types/books.t";
 
 type Response = {
-    updateBook: (id: string, data: Partial<Book>) => Promise<ApiResponse<Book>>;
+    updateBook: (id: number, data: Partial<Book>) => Promise<ApiResponse<Book>>;
     updating: boolean;
 }
 
 const useUpdateBook = (): Response => {
     const [updating, setUpdating] = useState<boolean>(false);
 
-    const updateBook = async (id: string, data: Partial<Book>): Promise<ApiResponse<Book>> => {
+    const updateBook = async (id: number, data: Partial<Book>): Promise<ApiResponse<Book>> => {
         setUpdating(true);
 
         const response = ErrorThrower(

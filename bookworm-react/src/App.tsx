@@ -1,29 +1,33 @@
 import { SnackbarProvider } from "notistack";
+import { Provider } from "react-redux";
 import { BrowserRouter } from "react-router-dom";
 import Header from './components/theme/Header';
 import Sidebar from './components/theme/Sidebar';
+import { store } from './redux/store';
 import Routes from './routes';
 import './styles/styles.scss';
 
 function App() {
 
   return (
-    <BrowserRouter>
-      <SnackbarProvider />
-      
-      <div className="App">
-        <Header />
+    <Provider store={store}>
+      <BrowserRouter>
+        <SnackbarProvider />
 
-        <main>
-          <Sidebar />
+        <div className="App">
+          <Header />
 
-          <div className="AppContent flex">
-            <Routes />
-          </div>
+          <main>
+            <Sidebar />
 
-        </main>
-      </div>
+            <div className="AppContent flex">
+              <Routes />
+            </div>
+
+          </main>
+        </div>
       </BrowserRouter>
+    </Provider>
   );
 }
 
