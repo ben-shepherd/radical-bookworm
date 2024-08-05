@@ -5,7 +5,7 @@ Docker for development
 
 Laravel 11
 
-MongoDB
+Postgres
 
 React using create-react-app (TypeScript)
 
@@ -75,9 +75,3 @@ Aa static key in the .env must match header Authorization
 # #Extras
 
 As well as the `NyTimesService`, I have provided an additional resource that acts as if it were another external API that provides book resources called `ExternalBookService`. In reality it's connecting to another DB and pulling the books down from a collection and then formatting them in the system expects 
-
-# #Issues
-
-There is a slight issue where I've not used a global state handler like Redux, Context or MobX. As a result, in some places there is a slight data state mismatch.
-
-Specific example is book favourites. The data is fetched for rendering the gallery, and then turns into a search result when searching, which uses a different data state for rendering the favourite (heart icon). This could be solved by using state management to store them globally and render accordingly 
