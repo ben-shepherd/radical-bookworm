@@ -30,7 +30,7 @@ use Illuminate\Support\Facades\Auth;
  *         @OA\JsonContent(
  *             type="object",
  *             @OA\Property(property="success", type="boolean", example=true),
- *             @OA\Property(property="type", type="string", enum={"added", "removed"}, example="added")
+ *             @OA\Property(property="type", type="boolean", example="true")
  *         )
  *     ),
  *     @OA\Response(

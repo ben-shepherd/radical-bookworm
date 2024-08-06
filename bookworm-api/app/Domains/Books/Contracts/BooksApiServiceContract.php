@@ -19,7 +19,10 @@ interface BooksApiServiceContract
      * @param GetCachedBestSellerOptions $options
      * @return Collection<BookDTO>
      */
-    public function getCachedBestSellers(GetCachedBestSellerOptions $options): Collection;
+    public function getCachedBestSellers(
+        BooksApiGetOptionsDTO $options,
+        GetCachedBestSellerOptions $cacheOptions
+    ): Collection;
 
     /**
      * @return Collection<BookDTO>

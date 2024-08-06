@@ -55,24 +55,33 @@ readonly class BooksApiService implements BooksApiServiceContract
     }
 
     /**
-     * @param GetCachedBestSellerOptions $options
+     * @param BooksApiGetOptionsDTO|null $options
+     * @param GetCachedBestSellerOptions|null $cacheOptions
      * @return Collection<BookDTO>
      * @throws BindingResolutionException
      * @throws BooksApiException
      */
-    public function getCachedBestSellers(GetCachedBestSellerOptions $options): Collection
+    public function getCachedBestSellers(
+        ?BooksApiGetOptionsDTO $options = null,
+        ?GetCachedBestSellerOptions $cacheOptions = null
+    ): Collection
     {
-        if(!$options->cached) {
-            cache()->forget($options->cacheKey);
+        $options = $options ?? new BooksApiGetOptionsDTO();
+        $cacheOptions = $cacheOptions ?? new GetCachedBestSellerOptions();
+
+        if(!$cacheOptions->cached) {
+            cache()->forget($cacheOptions->cacheKey);
         }
 
-        return cache()->remember($options->cacheKey, $options->cacheMinutes * 60, function() {
-            return $this->getBookDTOs(new BooksApiGetOptionsDTO());
+        $cacheKey = $cacheOptions->cacheKey . $options->search;
+
+        return cache()->remember($cacheKey, $cacheOptions->cacheMinutes * 60, function() use($options) {
+            return $this->getBookDTOs($options);
         });
     }
 
     /**
-     * Iterates through all available apis and updates the books collection.
+     * Iterates through all available apis and updates the book collection.
      *
      * @throws BooksApiException
      * @throws BindingResolutionException

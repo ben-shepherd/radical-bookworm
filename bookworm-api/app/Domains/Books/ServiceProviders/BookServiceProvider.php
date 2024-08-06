@@ -19,10 +19,22 @@ class BookServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
-        $nyTimesBaseUrl = config('books.nytimes.baseUrl');
+        // Register NyTimes Api
+        $this->registerNyTimesApi();;
 
         // Services
         $this->app->bind(BooksApiServiceContract::class, BooksApiService::class);
+    }
+
+    public function boot(): void
+    {
+        $this->mapMiddleware();
+        $this->mapBooksRoutes();
+    }
+
+    private function registerNyTimesApi(): void
+    {
+        $nyTimesBaseUrl = config('books.nytimes.baseUrl');
 
         // Setup NyTimes Book Api
         $this->app->when(NyTimesService::class)
@@ -35,12 +47,6 @@ class BookServiceProvider extends ServiceProvider
                     ]
                 ]);
             });
-    }
-
-    public function boot(): void
-    {
-        $this->mapMiddleware();
-        $this->mapBooksRoutes();
     }
 
     private function mapMiddleware(): void

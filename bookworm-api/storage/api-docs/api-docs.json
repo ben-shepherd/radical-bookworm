@@ -14,6 +14,31 @@
                 "summary": "Get best selling books",
                 "description": "",
                 "operationId": "ce4b208024cd0b674ef43cac5bcd3f98",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Book"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/best-sellers-search": {
+            "get": {
+                "tags": [
+                    "Books"
+                ],
+                "summary": "Get best selling books",
+                "description": "",
+                "operationId": "754d6175620ed0c6e6da66c499178c01",
                 "parameters": [
                     {
                         "name": "search",
@@ -29,14 +54,6 @@
                         "description": "Number of items to return per page. Defaults to 20",
                         "schema": {
                             "type": "integer"
-                        }
-                    },
-                    {
-                        "name": "cache",
-                        "in": "query",
-                        "description": "Whether to retrieve data from cache or API. Defaults to true",
-                        "schema": {
-                            "type": "boolean"
                         }
                     }
                 ],
@@ -284,12 +301,8 @@
                                             "example": true
                                         },
                                         "type": {
-                                            "type": "string",
-                                            "enum": [
-                                                "added",
-                                                "removed"
-                                            ],
-                                            "example": "added"
+                                            "type": "boolean",
+                                            "example": "true"
                                         }
                                     },
                                     "type": "object"
@@ -354,8 +367,8 @@
                 },
                 "type": "object"
             },
-            "BestSellersRequest": {
-                "title": "BestSellersRequest",
+            "BestSellersSearchRequest": {
+                "title": "BestSellersSearchRequest",
                 "description": "Request to get best selling books",
                 "required": [
                     "search",
