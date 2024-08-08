@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Domains\Books\DTOs\Services\BooksApiGetOptionsDTO;
 use App\Domains\Books\Exceptions\BooksApiException;
 use App\Domains\Books\Services\BooksApiService;
 use Illuminate\Console\Command;
@@ -32,6 +33,6 @@ class UpdateBooks extends Command
     {
         /** @var BooksApiService $booksService */
         $booksService = app()->make(BooksApiService::class);
-        $booksService->updateBooks();
+        $booksService->updateBooks(new BooksApiGetOptionsDTO());
     }
 }

@@ -14,7 +14,7 @@ services:
       - DB_PASSWORD=example
     volumes:
       - ./bookworm-api:/var/www/html
-      - ./bookworm-api/vendor:/var/www/html/vendor
+      - vendor:/var/www/html/vendor
     networks:
       - app-network
 
@@ -33,6 +33,7 @@ services:
 
 volumes:
   postgres-data:
+  vendor:
 
 networks:
   app-network:

@@ -42,14 +42,23 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 # Set working directory
 WORKDIR /var/www/html
 
+# Copy only necessary files for composer install
+COPY composer.json composer.lock ./
+
+# Copy .env file
+COPY .env.example .env
+
+# Install Laravel dependencies
+RUN composer install --no-scripts --no-autoloader
+
 # Copy existing application directory contents
 COPY . .
 
-# Install Laravel dependencies
-RUN composer install
+# Generate autoloader and run scripts
+RUN composer dump-autoload --optimize
 
-# Copy existing application directory permissions
-COPY --chown=www-data:www-data . .
+# Set permissions
+RUN chown -R www-data:www-data /var/www/html
 
 # Copy the Nginx configuration file
 COPY ./nginx/default.conf /etc/nginx/sites-available/default
@@ -60,5 +69,9 @@ COPY ./supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 # Expose ports 8000 and 9003 (XDebug)
 EXPOSE 8000 9003
 
-# Start Supervisor to manage Nginx and PHP-FPM
-CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/supervisord.conf"]
+# Copy startup script
+COPY start.sh /start.sh
+RUN chmod +x /start.sh
+
+# Set the startup script as the entry point
+CMD ["/start.sh"]

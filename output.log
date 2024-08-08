@@ -1,0 +1,87 @@
+#0 building with "default" instance using docker driver
+
+#1 [backend internal] load build definition from Dockerfile
+#1 transferring dockerfile: 2.05kB done
+#1 DONE 0.0s
+
+#2 [backend internal] load metadata for docker.io/library/composer:latest
+#2 ...
+
+#3 [backend internal] load metadata for docker.io/library/php:8.2-fpm
+#3 DONE 0.5s
+
+#2 [backend internal] load metadata for docker.io/library/composer:latest
+#2 DONE 0.5s
+
+#4 [backend internal] load .dockerignore
+#4 transferring context: 2B done
+#4 DONE 0.0s
+
+#5 [backend stage-0  1/18] FROM docker.io/library/php:8.2-fpm@sha256:70fa3d07224ee8941404379f01a49d35a293fac78ad521cbf94d8291c235ca4d
+#5 DONE 0.0s
+
+#6 [backend] FROM docker.io/library/composer:latest@sha256:2088445f2bcaea6fe72cefcdd9ef0cb75139ee103459cc0d1dad496e19847d2c
+#6 resolve docker.io/library/composer:latest@sha256:2088445f2bcaea6fe72cefcdd9ef0cb75139ee103459cc0d1dad496e19847d2c done
+#6 DONE 0.0s
+
+#7 [backend internal] load build context
+#7 transferring context: 3.09MB 1.4s done
+#7 DONE 1.5s
+
+#8 [backend stage-0  3/18] RUN docker-php-ext-install pdo pdo_mysql mbstring exif pcntl bcmath gd zip intl
+#8 CACHED
+
+#9 [backend stage-0  9/18] COPY composer.json composer.lock ./
+#9 CACHED
+
+#10 [backend stage-0  2/18] RUN apt-get update && apt-get install -y     git     curl     libpng-dev     libjpeg-dev     libfreetype6-dev     libonig-dev     libxml2-dev     zip     unzip     nginx     supervisor     libssl-dev     pkg-config     libcurl4-openssl-dev     libpq-dev     libzip-dev     libicu-dev
+#10 CACHED
+
+#11 [backend stage-0  4/18] RUN docker-php-ext-install pdo_pgsql
+#11 CACHED
+
+#12 [backend stage-0  7/18] COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+#12 CACHED
+
+#13 [backend stage-0  6/18] RUN echo "xdebug.mode=debug,develop" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini     && echo "xdebug.client_host=host.docker.internal" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini     && echo "xdebug.start_with_request=yes" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini     && echo "xdebug.client_port=9003" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+#13 CACHED
+
+#14 [backend stage-0 12/18] COPY . .
+#14 CACHED
+
+#15 [backend stage-0  8/18] WORKDIR /var/www/html
+#15 CACHED
+
+#16 [backend stage-0 10/18] COPY .env.example .env
+#16 CACHED
+
+#17 [backend stage-0  5/18] RUN pecl install xdebug && docker-php-ext-enable xdebug
+#17 CACHED
+
+#18 [backend stage-0 11/18] RUN composer install --no-scripts --no-autoloader
+#18 CACHED
+
+#19 [backend stage-0 13/18] RUN composer dump-autoload --optimize
+#19 CACHED
+
+#20 [backend stage-0 14/18] RUN chown -R www-data:www-data /var/www/html
+#20 DONE 35.7s
+
+#21 [backend stage-0 15/18] COPY ./nginx/default.conf /etc/nginx/sites-available/default
+#21 DONE 0.0s
+
+#22 [backend stage-0 16/18] COPY ./supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+#22 DONE 0.0s
+
+#23 [backend stage-0 17/18] COPY start.sh /start.sh
+#23 DONE 0.0s
+
+#24 [backend stage-0 18/18] RUN chmod +x /start.sh
+#24 DONE 0.3s
+
+#25 [backend] exporting to image
+#25 exporting layers
+#25 exporting layers 5.9s done
+#25 writing image sha256:2bcdce49d593b4c02264d2331f5483ca34e0cdf28d52c54e04b85b515a9795de done
+#25 naming to docker.io/library/radical-backend done
+#25 DONE 5.9s
